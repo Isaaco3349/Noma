@@ -1,0 +1,36 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Keys and credentials
+*.pem
+*.key
+id_rsa*
+**/secrets/
+
+# Node
+node_modules/
+.npm/
+.pnpm-store/
+
+# Next.js
+frontend/.next/
+frontend/out/
+
+# Foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+
+# OS and editors
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs and coverage
+*.log
+coverage/

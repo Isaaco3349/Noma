@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/*
+  Design tokens — single source of truth.
+  Muted on bg: #5C584B on #E8E2D5 ≈ 4.9:1 (WCAG AA normal text).
+*/
+:root {
+  --bg: #e8e2d5;
+  --surface: #f3efe6;
+  --accent: #b0a998;
+  --text: #262c34;
+  --text-muted: #5c584b;
+  --border: #c9c2b3;
+
+  --semantic-success: #2d6a4f;
+  --semantic-error: #9b2c2c;
+
+  --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+  --color-semantic-success: var(--semantic-success);
+  --color-semantic-error: var(--semantic-error);
+  --font-sans: var(--font-sans);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+}

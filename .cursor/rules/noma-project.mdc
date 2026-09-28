@@ -1,0 +1,37 @@
+---
+description: Noma core project constraints (Monad Metropolis, Nigeria corridor)
+alwaysApply: true
+---
+
+# Noma project rules
+
+## Scope
+
+- **Corridor**: Nigeria diaspora → Nigeria only. Do not add other corridors without explicit approval.
+- **Chain**: Monad only. No Moove, Arc, Base, or other chain-specific code in this repo.
+
+## Secrets and configuration
+
+- Never hardcode secrets, API keys, or private RPC URLs in source.
+- Use `.env` / `.env.local` and document placeholders in `.env.example` only.
+
+## Smart contracts
+
+- Every change under `contracts/src/` requires a matching Foundry test under `contracts/test/`.
+
+## Chain data
+
+- Do not guess chain IDs, RPC URLs, or contract addresses.
+- Read from [Monad official docs](https://docs.monad.xyz/) or ask the project owner.
+- Mark unverified values with `TODO(verify)` in code and docs.
+
+## UI and design
+
+- Use design tokens from `frontend/src/app/globals.css` only (`--bg`, `--surface`, `--accent`, `--text`, `--text-muted`, `--border`).
+- Do not introduce hex colors in components except semantic success/error/warning states.
+- Prefer small, focused diffs. Ask before changing more than ~5 files in one task.
+
+## Integrations (Agora, wallets, Aurora)
+
+- Do not silently choose Agora Stablecoin API vs direct AUSD, Aurora Intents, or wallet provider (Mera / Privy / Dynamic).
+- State assumptions in code comments, `PROGRESS.md`, or PR description and confirm with the team when uncertain.
