@@ -14,7 +14,7 @@ Remittance to Nigeria is expensive and fragmented: multiple apps, opaque FX, and
 | --- | --- |
 | **Execution** | Solidity on Monad: authorization, spend limits, recurring schedules |
 | **Settlement** | AUSD behind an adapter (direct AUSD transfers and/or Agora Stablecoin API — **not chosen yet**) |
-| **Onboarding** | Passkey or embedded wallet (**provider TBD**: Mera, Privy, or Dynamic) |
+| **Onboarding** | Mera passkey → derived EOA (see [Auth](#auth-passkey-wallet)) |
 | **Voice agent** | Speech-to-text → intent parser; always confirm; hard spend limits |
 | **NGN delivery** | Licensed local payment / off-ramp partner; Noma **orchestrates only** |
 
@@ -25,7 +25,8 @@ Noma is **not** a money transmitter and does **not** custody fiat. The product m
 - **Corridor**: Nigeria only.
 - **Chain**: Monad testnet configuration only; no live on-chain payments yet.
 - **Mocked today**: chat assistant reply, payment plan card, Confirm/Cancel (no-op), mic button (disabled until voice work).
-- **Not built yet**: contracts, AUSD settlement, wallet connect, auth, voice, real NGN payout API.
+- **Not built yet**: contracts, AUSD settlement, voice, real NGN payout API, transaction signing from chat.
+- **Built (Day 2)**: passkey sign-up/sign-in via Mera, testnet address + MON balance, recovery phrase export (optional).
 - **No** Moove, Arc, or Base-specific code in this repository.
 
 ## Tech stack
@@ -66,7 +67,7 @@ cd contracts
 | Day | Focus |
 | --- | --- |
 | **1** | Repo skeleton, rules, design tokens, chat shell, Monad testnet chain config |
-| **2** | Wallet onboarding (provider TBD), basic connect flow |
+| **2** | Mera passkey wallet, testnet balance + faucet link |
 | **3** | Intent parser + confirmation UX (text) |
 | **4** | Foundry contracts: authorization + limits + tests |
 | **5** | Voice (STT) + mic integration |
@@ -78,6 +79,18 @@ Details and blockers: [PROGRESS.md](./PROGRESS.md).
 ## Compliance note
 
 Noma is an **orchestration and user-experience layer** for cross-border payments. Fiat payout to beneficiaries in Nigeria is intended to flow through **licensed** local payment or off-ramp partners. Noma does not hold customer fiat as a money transmitter. Copy and flows should avoid implying licensed remittance status until partnerships and legal review say otherwise.
+
+## Auth (passkey wallet)
+
+Noma uses **[Mera](https://mera.category.xyz/)** (`@category-labs/mera`) per the [Monad passkey guide](https://docs.monad.xyz/guides/mera):
+
+- **Create account** / **Sign in** in the header — WebAuthn passkey with PRF (Face ID, Touch ID, device PIN, or security key).
+- Only the passkey **credential id** is stored in the browser (`localStorage`); signing keys live in memory for the session and are cleared on sign-out.
+- **Recovery phrase** is optional: derived from the passkey when you export it (same words as the Monad guide’s BIP-39 path); Mera does not provide a separate export API.
+- **Test MON**: [Monad testnet faucet](https://faucet.monad.xyz) ([docs](https://docs.monad.xyz/developer-essentials/testnet)).
+- **Desktop Chrome**: passkeys must use **Google Password Manager** for PRF; see [Authenticator support](https://mera.category.xyz/authenticator-support).
+
+Implementation: `frontend/src/lib/wallet/` (`WalletProvider` interface + `meraWallet`).
 
 ## Monad testnet reference
 

@@ -4,14 +4,15 @@ import { FormEvent, useState } from "react";
 
 type ChatInputProps = {
   onMicClick?: () => void;
+  onSend?: (text: string) => void;
 };
 
-export function ChatInput({ onMicClick }: ChatInputProps) {
+export function ChatInput({ onMicClick, onSend }: ChatInputProps) {
   const [value, setValue] = useState("");
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    // Day 1: input is visual only; no send pipeline yet.
+    onSend?.(value);
     setValue("");
   }
 

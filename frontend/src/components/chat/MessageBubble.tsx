@@ -13,10 +13,10 @@ export function MessageBubble({ role, children }: MessageBubbleProps) {
       className={`flex w-full ${isUser ? "justify-end" : "justify-start"}`}
     >
       <div
-        className={`max-w-[min(100%,36rem)] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+        className={`max-w-[min(100%,36rem)] px-4 py-3 text-sm leading-relaxed ${
           isUser
-            ? "rounded-br-md bg-accent/40 text-text"
-            : "rounded-bl-md border border-border bg-surface text-text"
+            ? "rounded-2xl rounded-br-sm bg-text text-surface"
+            : "rounded-2xl rounded-bl-sm border border-border bg-surface text-text shadow-[0_1px_0_0_var(--border)]"
         }`}
       >
         {children}

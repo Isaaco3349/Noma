@@ -11,11 +11,11 @@ export function PaymentPlanCard({
   beneficiary,
   location,
   schedule,
-  corridorNote = "NGN delivery via licensed partner (orchestration only — not live on Day 1).",
+  corridorNote = "NGN delivery via licensed partner (orchestration only, not live on Day 1).",
 }: PaymentPlanCardProps) {
   return (
     <div className="mt-2 w-full max-w-md rounded-xl border border-border bg-surface p-4 shadow-sm">
-      <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+      <p className="font-display text-sm font-semibold text-text">
         Payment plan
       </p>
       <dl className="mt-3 space-y-2 text-sm">

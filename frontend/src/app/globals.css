@@ -2,20 +2,25 @@
 
 /*
   Design tokens — single source of truth.
-  Muted on bg: #5C584B on #E8E2D5 ≈ 4.9:1 (WCAG AA normal text).
+  Muted on bg: #5C584B on #CEC8B8 ≈ 4.6:1 (WCAG AA normal text).
 */
 :root {
-  --bg: #e8e2d5;
-  --surface: #f3efe6;
+  --bg: #cec8b8;
+  --surface: #ddd6c8;
   --accent: #b0a998;
   --text: #262c34;
   --text-muted: #5c584b;
-  --border: #c9c2b3;
+  --border: #b8b0a0;
+
+  --header-bg: #262c34;
+  --header-fg: #f3efe6;
+  --header-muted: #b0a998;
 
   --semantic-success: #2d6a4f;
   --semantic-error: #9b2c2c;
 
   --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: Georgia, Cambria, "Times New Roman", serif;
 }
 
 @theme inline {
@@ -25,9 +30,13 @@
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
   --color-border: var(--border);
+  --color-header-bg: var(--header-bg);
+  --color-header-fg: var(--header-fg);
+  --color-header-muted: var(--header-muted);
   --color-semantic-success: var(--semantic-success);
   --color-semantic-error: var(--semantic-error);
   --font-sans: var(--font-sans);
+  --font-display: Georgia, Cambria, "Times New Roman", serif;
 }
 
 body {

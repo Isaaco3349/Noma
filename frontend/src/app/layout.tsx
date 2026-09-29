@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { WalletShell } from "@/components/wallet/WalletShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-dvh antialiased">
-        {children}
+        <WalletShell>{children}</WalletShell>
       </body>
     </html>
   );
