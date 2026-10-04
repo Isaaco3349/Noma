@@ -18,18 +18,20 @@ export default function RecipientsPage() {
   }, [refresh]);
 
   return (
-    <div className="space-y-6 px-4 py-6 sm:px-6">
+    <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
       <div>
         <h1 className="font-display text-lg font-semibold text-text">
           Recipients
         </h1>
-        <p className="mt-1 text-sm text-text-muted">
+        <p className="mt-1 max-w-2xl text-sm text-text-muted">
           Nigeria payout details via Paystack transfer recipients. Nicknames
           match chat (Mum, Sister, …).
         </p>
       </div>
-      <RecipientList recipients={recipients} />
-      <RecipientForm onSaved={refresh} />
+      <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
+        <RecipientList recipients={recipients} />
+        <RecipientForm onSaved={refresh} />
+      </div>
     </div>
   );
 }

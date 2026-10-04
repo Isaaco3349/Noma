@@ -14,7 +14,7 @@ export function AppSubnav() {
 
   return (
     <nav
-      className="flex gap-1 border-b border-border bg-surface px-4 sm:px-6"
+      className="flex shrink-0 gap-1 border-b border-border bg-surface px-4 sm:px-6 lg:w-52 lg:flex-col lg:gap-0.5 lg:border-b-0 lg:border-r lg:px-3 lg:py-4"
       aria-label="App sections"
     >
       {LINKS.map(({ href, label }) => {
@@ -24,10 +24,10 @@ export function AppSubnav() {
           <Link
             key={href}
             href={href}
-            className={`border-b-2 px-3 py-2 text-xs font-medium sm:text-sm ${
+            className={`border-b-2 px-3 py-2 text-xs font-medium sm:text-sm lg:rounded-lg lg:border-b-0 lg:border-l-2 ${
               active
-                ? "border-text text-text"
-                : "border-transparent text-text-muted hover:text-text"
+                ? "border-text text-text lg:bg-bg lg:font-semibold"
+                : "border-transparent text-text-muted hover:bg-bg hover:text-text"
             }`}
           >
             {label}

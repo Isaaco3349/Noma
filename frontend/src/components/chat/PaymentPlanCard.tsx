@@ -46,7 +46,7 @@ export function PaymentPlanCard({
     canConfirm && recipientReady && !confirmPending;
 
   return (
-    <div className="mt-2 w-full max-w-md rounded-xl border border-border bg-surface p-4 shadow-sm">
+    <div className="mt-2 w-full max-w-md lg:max-w-lg rounded-xl border border-border bg-surface p-4 shadow-sm">
       <div className="flex items-start justify-between gap-2">
         <p className="font-display text-sm font-semibold text-text">
           Payment plan
