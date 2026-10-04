@@ -13,7 +13,7 @@ export default function HistoryPage() {
   }, []);
 
   return (
-    <div className="space-y-4 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-4xl space-y-4 px-4 py-6 sm:px-6 lg:max-w-5xl lg:px-10">
       <div>
         <h1 className="font-display text-lg font-semibold text-text">
           Plan history

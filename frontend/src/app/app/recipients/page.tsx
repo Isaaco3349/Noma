@@ -18,7 +18,7 @@ export default function RecipientsPage() {
   }, [refresh]);
 
   return (
-    <div className="space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-10">
       <div>
         <h1 className="font-display text-lg font-semibold text-text">
           Recipients

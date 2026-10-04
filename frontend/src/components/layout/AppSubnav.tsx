@@ -14,7 +14,7 @@ export function AppSubnav() {
 
   return (
     <nav
-      className="flex shrink-0 gap-1 border-b border-border bg-surface px-4 sm:px-6 lg:w-52 lg:flex-col lg:gap-0.5 lg:border-b-0 lg:border-r lg:px-3 lg:py-4"
+      className="flex shrink-0 gap-1 border-b border-border bg-surface px-4 sm:px-6 lg:w-56 lg:flex-col lg:gap-0.5 lg:border-b-0 lg:border-r lg:px-4 lg:py-5"
       aria-label="App sections"
     >
       {LINKS.map(({ href, label }) => {

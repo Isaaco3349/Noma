@@ -33,7 +33,7 @@ export function MessageList({
   }
 
   return (
-    <ul className="flex flex-1 flex-col gap-4 overflow-y-auto bg-bg px-4 py-6 sm:px-6">
+    <ul className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto bg-bg px-4 py-6 sm:px-6 lg:max-w-5xl lg:px-8">
       {messages.map((message) => {
         const matched =
           message.plan &&

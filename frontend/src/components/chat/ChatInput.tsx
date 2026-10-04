@@ -122,7 +122,7 @@ export function ChatInput({ onSend, speaking }: ChatInputProps) {
         : "Speak your payment instruction";
 
   return (
-    <div className="border-t border-border bg-surface">
+    <div className="border-t border-border bg-surface lg:px-4">
       {voiceError ? (
         <p className="px-4 pt-2 text-xs text-semantic-error" role="status">
           {voiceError}
@@ -140,7 +140,7 @@ export function ChatInput({ onSend, speaking }: ChatInputProps) {
       ) : null}
       <form
         onSubmit={handleSubmit}
-        className="flex items-end gap-2 p-3 sm:p-4"
+        className="mx-auto flex w-full max-w-4xl items-end gap-2 p-3 sm:max-w-5xl sm:p-4 lg:px-8"
       >
         <label className="sr-only" htmlFor="noma-chat-input">
           Message Noma
