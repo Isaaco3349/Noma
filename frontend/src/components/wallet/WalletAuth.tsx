@@ -8,10 +8,6 @@ import { MONAD_TESTNET_FAUCET_URL } from "@/lib/wallet/constants";
 import { ExportRecoveryModal } from "./ExportRecoveryModal";
 import { useWallet } from "./WalletContext";
 
-function shortenAddress(address: string): string {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`;
-}
-
 type WalletAuthProps = {
   variant?: "appBar" | "hero";
   onSignedIn?: () => void;
@@ -26,8 +22,20 @@ export function WalletAuth({
   const [balanceMon, setBalanceMon] = useState<string | null>(null);
   const [balanceError, setBalanceError] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const [addressCopied, setAddressCopied] = useState(false);
 
   const isHero = variant === "hero";
+
+  async function copyAddress() {
+    if (auth.status !== "signed_in") return;
+    try {
+      await navigator.clipboard.writeText(auth.address);
+      setAddressCopied(true);
+      window.setTimeout(() => setAddressCopied(false), 2000);
+    } catch {
+      setAddressCopied(false);
+    }
+  }
 
   useEffect(() => {
     if (auth.status !== "signed_in") {
@@ -112,16 +120,49 @@ export function WalletAuth({
         ? "Loading…"
         : `${balanceMon} MON`;
 
+    const monNumeric =
+      balanceMon != null ? Number.parseFloat(balanceMon) : null;
+    const needsMon =
+      monNumeric != null &&
+      Number.isFinite(monNumeric) &&
+      monNumeric < 0.001;
+
     return (
       <>
         <div className="rounded-lg border border-border bg-surface p-3 sm:p-4">
-          <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2 sm:gap-x-8">
-            <div className="flex items-baseline justify-between gap-4 sm:block">
+          <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 sm:gap-x-8">
+            <div className="sm:col-span-2">
               <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                Account
+                Wallet address (Monad testnet)
               </dt>
-              <dd className="font-mono text-sm text-text sm:mt-1">
-                {shortenAddress(auth.address)}
+              <dd className="mt-2 flex flex-col gap-2">
+                <code className="break-all rounded-md border border-border bg-bg px-2 py-2 font-mono text-[11px] leading-relaxed text-text sm:text-xs">
+                  {auth.address}
+                </code>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    className={buttonClass}
+                    onClick={() => void copyAddress()}
+                  >
+                    {addressCopied ? "Copied" : "Copy address"}
+                  </button>
+                  <a
+                    href={MONAD_TESTNET_FAUCET_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${buttonClass} inline-flex items-center border-accent bg-accent/20`}
+                  >
+                    Get test MON
+                  </a>
+                </div>
+                {needsMon ? (
+                  <p className="text-[11px] leading-relaxed text-text-muted sm:text-xs">
+                    New accounts start at 0 MON. Copy the address above, open
+                    the faucet, paste it, and request test MON — no seed phrase
+                    or external wallet required.
+                  </p>
+                ) : null}
               </dd>
             </div>
             <div className="flex items-baseline justify-between gap-4 sm:block">
@@ -135,20 +176,12 @@ export function WalletAuth({
           </dl>
           <div className="mt-4 flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
-              <a
-                href={MONAD_TESTNET_FAUCET_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-text"
-              >
-                Get test MON
-              </a>
               <button
                 type="button"
                 className="underline hover:text-text"
                 onClick={() => setExportOpen(true)}
               >
-                Export recovery phrase
+                Export recovery phrase (optional backup)
               </button>
             </div>
             <button
