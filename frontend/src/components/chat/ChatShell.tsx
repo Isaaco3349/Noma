@@ -297,6 +297,8 @@ export function ChatShell() {
         confirmingPlanId={confirmingPlanId}
         onPlanConfirm={handlePlanConfirm}
         onPlanCancel={handlePlanCancel}
+        onTryExample={(text) => void handleSend(text)}
+        onRecipientSaved={refreshRecipients}
       />
       <ChatInput onSend={handleSend} speaking={speaking} />
     </div>

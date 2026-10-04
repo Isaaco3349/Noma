@@ -150,7 +150,7 @@ export function ChatInput({ onSend, speaking }: ChatInputProps) {
           rows={1}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="Tell Noma who to pay in Nigeria…"
+          placeholder="e.g. Send $50 to Chidi in Enugu every month"
           className="min-h-[44px] flex-1 resize-none rounded-xl border border-border bg-bg px-3 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent/60"
         />
         <button

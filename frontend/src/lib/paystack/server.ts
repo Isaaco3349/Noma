@@ -1,6 +1,7 @@
 import {
   getPaystackSecretKey,
   PAYSTACK_API_BASE,
+  validatePaystackSecretKey,
 } from "./config";
 
 type PaystackResponse<T> = {
@@ -17,6 +18,7 @@ async function paystackFetch<T>(
   if (!secret) {
     throw new Error("PAYSTACK_SECRET_KEY is not configured");
   }
+  validatePaystackSecretKey(secret);
 
   const res = await fetch(`${PAYSTACK_API_BASE}${path}`, {
     ...init,

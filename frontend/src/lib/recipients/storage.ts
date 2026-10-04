@@ -32,13 +32,17 @@ export function findRecipientForPlan(
   list = readRecipients(),
 ): SavedRecipient | undefined {
   const ben = beneficiary.toLowerCase();
-  const loc = location.toLowerCase();
+  const loc = location.toLowerCase().replace(/\s+state$/, "");
+
+  const locMatches = (saved: string) => {
+    const s = saved.toLowerCase().replace(/\s+state$/, "");
+    return s === loc || s.startsWith(loc) || loc.startsWith(s);
+  };
 
   return (
     list.find(
       (r) =>
-        r.nickname.toLowerCase() === ben &&
-        r.location.toLowerCase() === loc,
+        r.nickname.toLowerCase() === ben && locMatches(r.location),
     ) ??
     list.find((r) => r.nickname.toLowerCase() === ben) ??
     list.find((r) => r.nickname.toLowerCase().includes(ben))

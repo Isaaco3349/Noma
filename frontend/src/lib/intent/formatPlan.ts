@@ -4,6 +4,9 @@ export function formatScheduleLabel(schedule: PaymentSchedule): string {
   if (schedule.kind === "one_time") {
     return "One-time (after you confirm)";
   }
+  if (schedule.frequency === "daily") {
+    return "Every day (on-chain uses weekly cadence on testnet)";
+  }
   if (schedule.frequency === "weekly") {
     return "Every week";
   }

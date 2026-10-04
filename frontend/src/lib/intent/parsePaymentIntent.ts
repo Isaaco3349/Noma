@@ -1,15 +1,42 @@
+import {
+  NIGERIA_PLACE_KEYS,
+  NIGERIA_PLACES,
+  resolveNigeriaPlace,
+} from "./nigeriaPlaces";
 import type { ParseFailure, ParseResult, PaymentPlan, PaymentSchedule } from "./types";
 
-const NIGERIA_LOCATIONS: Record<string, string> = {
-  lagos: "Lagos",
-  abuja: "Abuja",
-  "port harcourt": "Port Harcourt",
-  ibadan: "Ibadan",
-  kano: "Kano",
-  enugu: "Enugu",
-  benin: "Benin City",
-  nigeria: "Nigeria",
-};
+const BENEFICIARY_STOPWORDS = new Set([
+  "send",
+  "pay",
+  "dollar",
+  "dollars",
+  "usd",
+  "usdt",
+  "every",
+  "each",
+  "week",
+  "month",
+  "day",
+  "daily",
+  "weekly",
+  "monthly",
+  "once",
+  "time",
+  "nigeria",
+  "the",
+  "a",
+  "an",
+  "in",
+  "at",
+  "on",
+  "my",
+  "just",
+  "today",
+  "asap",
+  "hundred",
+  "family",
+  "friend",
+]);
 
 const RELATIONSHIP_LABELS: Record<string, string> = {
   mum: "Mum",
@@ -46,7 +73,7 @@ export function parsePaymentIntent(raw: string): ParseResult {
 
   if (OUT_OF_CORRIDOR.test(text) && !/\bnigeria\b/i.test(text)) {
     return failure(
-      "Noma only supports the Nigeria corridor right now. Try a city like Lagos or Abuja.",
+      "Noma only supports the Nigeria corridor right now. Name a Nigerian city or state (e.g. Enugu, Kano, Lagos).",
       [],
     );
   }
@@ -183,9 +210,37 @@ function parseBeneficiary(text: string): string | null {
   );
   if (toName) return toName[1]!;
 
-  const toWord = lower.match(/\b(?:to|for)\s+my\s+([a-z]{2,20})\b/);
-  if (toWord && !NIGERIA_LOCATIONS[toWord[1]!]) {
+  const toWord = lower.match(/\b(?:to|for)\s+my\s+([a-z][a-z'-]{1,20})\b/);
+  if (toWord && !isPlaceWord(toWord[1]!)) {
     return capitalize(toWord[1]!);
+  }
+
+  const toAnyone = lower.match(
+    /\b(?:to|for)\s+(?:my\s+)?([a-z][a-z'-]{1,20})\b/,
+  );
+  if (toAnyone && !isPlaceWord(toAnyone[1]!)) {
+    return capitalize(toAnyone[1]!);
+  }
+
+  const toNameBeforeIn = lower.match(
+    /\b(?:to|for)\s+(?:my\s+)?([a-z][a-z'-]{1,20}(?:\s+[a-z][a-z'-]{1,20})?)\s+in\b/,
+  );
+  if (toNameBeforeIn) {
+    const name = toNameBeforeIn[1]!.trim();
+    const first = name.split(/\s+/)[0]!;
+    if (!isPlaceWord(first)) {
+      return name
+        .split(/\s+/)
+        .map((w) => capitalize(w))
+        .join(" ");
+    }
+  }
+
+  const payName = lower.match(
+    /\bpay\s+([a-z][a-z'-]{1,20})\s+(?:\$|\d|in\b|every\b)/,
+  );
+  if (payName && !isPlaceWord(payName[1]!)) {
+    return capitalize(payName[1]!);
   }
 
   const handle = text.match(/@([A-Za-z0-9._-]{2,32})/);
@@ -197,20 +252,28 @@ function parseBeneficiary(text: string): string | null {
 function parseLocation(text: string): string | null {
   const lower = text.toLowerCase();
 
-  for (const [key, label] of Object.entries(NIGERIA_LOCATIONS)) {
+  for (const key of NIGERIA_PLACE_KEYS) {
     if (key === "nigeria") continue;
-    if (lower.includes(key)) return label;
+    if (lower.includes(key)) return NIGERIA_PLACES[key]!;
   }
 
   if (/\bnigeria\b/i.test(text)) return "Nigeria";
 
-  const inMatch = lower.match(/\b(?:in|at)\s+([a-z][a-z\s]{1,24})\b/);
+  const inMatch = lower.match(/\b(?:in|at)\s+([a-z][a-z\s]{1,28})\b/);
   if (inMatch) {
     const candidate = inMatch[1]!.trim();
-    if (NIGERIA_LOCATIONS[candidate]) return NIGERIA_LOCATIONS[candidate]!;
+    const resolved = resolveNigeriaPlace(candidate);
+    if (resolved) return resolved;
   }
 
   return null;
+}
+
+function isPlaceWord(word: string): boolean {
+  const w = word.toLowerCase();
+  if (BENEFICIARY_STOPWORDS.has(w)) return true;
+  if (NIGERIA_PLACES[w]) return true;
+  return false;
 }
 
 function parseSchedule(text: string): PaymentSchedule | null {
@@ -228,6 +291,10 @@ function parseSchedule(text: string): PaymentSchedule | null {
     !/\bmonthly|every month|every week|once a month|once a week\b/.test(lower)
   ) {
     return { kind: "one_time" };
+  }
+
+  if (/\b(every day|each day|daily)\b/.test(lower)) {
+    return { kind: "recurring", frequency: "daily" };
   }
 
   if (/\b(every week|weekly|each week)\b/.test(lower)) {
@@ -285,13 +352,15 @@ function buildMissingMessage(
     parts.push("how much in dollars (e.g. $100 or 100 USDT treated as USD for demo)");
   }
   if (missing.includes("beneficiary")) {
-    parts.push("who receives it (e.g. my mum)");
+    parts.push("who receives it (name or relation, e.g. Chidi or my cousin)");
   }
   if (missing.includes("location")) {
-    parts.push("where in Nigeria (e.g. Lagos)");
+    parts.push("where in Nigeria (city or state, e.g. Enugu or Rivers state)");
   }
   if (missing.includes("schedule")) {
-    parts.push("when (e.g. on the 2nd of every month, or one-time)");
+    parts.push(
+      "when (once, daily, weekly, or monthly — e.g. every month on the 2nd)",
+    );
   }
   return `I need a bit more: ${parts.join(", ")}.`;
 }

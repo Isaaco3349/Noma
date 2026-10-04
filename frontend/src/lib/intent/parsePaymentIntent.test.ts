@@ -48,6 +48,20 @@ test("treats USDT amount as USD for demo", () => {
   assert.equal(result.plan.amountUsd, 25);
 });
 
+test("parses arbitrary name and Enugu with daily schedule", () => {
+  const result = parsePaymentIntent(
+    "Send $50 to Chidi in Enugu every day",
+  );
+  assert.equal(result.ok, true);
+  if (!result.ok) return;
+  assert.equal(result.plan.beneficiary, "Chidi");
+  assert.equal(result.plan.location, "Enugu");
+  assert.equal(result.plan.schedule.kind, "recurring");
+  if (result.plan.schedule.kind === "recurring") {
+    assert.equal(result.plan.schedule.frequency, "daily");
+  }
+});
+
 test("parses spoken hundred dollars and once (voice-style)", () => {
   const result = parsePaymentIntent(
     "send hundred dollar to my mom in Lagos once",

@@ -7,6 +7,20 @@ export function getPaystackSecretKey(): string | undefined {
   return key && key.length > 0 ? key : undefined;
 }
 
+/** Paystack secret keys must be plain ASCII (Vercel paste sometimes includes …). */
+export function validatePaystackSecretKey(key: string): void {
+  if (/[^\x00-\x7F]/.test(key)) {
+    throw new Error(
+      "PAYSTACK_SECRET_KEY contains invalid characters (often “…” from a truncated copy). Paste the full sk_test_ key from Paystack → Settings → API Keys into Vercel, then redeploy.",
+    );
+  }
+  if (!/^sk_(test|live)_[A-Za-z0-9]+$/.test(key)) {
+    throw new Error(
+      "PAYSTACK_SECRET_KEY format looks wrong. Use the complete secret key from Paystack (starts with sk_test_ or sk_live_).",
+    );
+  }
+}
+
 /** Paystack API (banks, resolve, transfer recipients) when secret key is set. */
 export function isPaystackLive(): boolean {
   return Boolean(getPaystackSecretKey());

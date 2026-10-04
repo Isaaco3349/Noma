@@ -1,24 +1,34 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { upsertRecipient } from "@/lib/recipients/storage";
-import type { SavedRecipient } from "@/lib/recipients/types";
+import { savePaystackRecipient } from "@/lib/recipients/savePaystackRecipient";
 
 type Bank = { name: string; code: string };
 
 type RecipientFormProps = {
   onSaved?: () => void;
+  initialNickname?: string;
+  initialLocation?: string;
 };
 
-export function RecipientForm({ onSaved }: RecipientFormProps) {
+export function RecipientForm({
+  onSaved,
+  initialNickname = "",
+  initialLocation = "",
+}: RecipientFormProps) {
   const [banks, setBanks] = useState<Bank[]>([]);
   const [mode, setMode] = useState<"demo" | "live">("demo");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const [nickname, setNickname] = useState("Mum");
-  const [location, setLocation] = useState("Lagos");
+  const [nickname, setNickname] = useState(initialNickname);
+  const [location, setLocation] = useState(initialLocation);
+
+  useEffect(() => {
+    if (initialNickname) setNickname(initialNickname);
+    if (initialLocation) setLocation(initialLocation);
+  }, [initialNickname, initialLocation]);
   const [accountNumber, setAccountNumber] = useState("");
   const [bankCode, setBankCode] = useState("");
 
@@ -42,43 +52,16 @@ export function RecipientForm({ onSaved }: RecipientFormProps) {
     const bankName = banks.find((b) => b.code === bankCode)?.name ?? "";
 
     try {
-      const res = await fetch("/api/paystack/recipient", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          nickname,
-          location,
-          accountNumber,
-          bankCode,
-          bankName,
-        }),
-      });
-      const json = (await res.json()) as {
-        error?: string;
-        paystackRecipientCode?: string;
-        accountName?: string;
-        mode?: "demo" | "live";
-      };
-
-      if (!res.ok || !json.paystackRecipientCode) {
-        throw new Error(json.error ?? "Failed to save recipient");
-      }
-
-      const entry: SavedRecipient = {
-        id: crypto.randomUUID(),
-        nickname: nickname.trim(),
-        location: location.trim(),
-        accountNumber: accountNumber.trim(),
+      const { entry, mode: savedMode } = await savePaystackRecipient({
+        nickname,
+        location,
+        accountNumber,
         bankCode,
         bankName,
-        accountName: json.accountName ?? nickname,
-        paystackRecipientCode: json.paystackRecipientCode,
-        createdAt: Date.now(),
-      };
-      upsertRecipient(entry);
+      });
       setSuccess(
-        json.mode === "live"
-          ? `Saved ${entry.accountName} (${json.paystackRecipientCode}).`
+        savedMode === "live"
+          ? `Saved ${entry.accountName} (${entry.paystackRecipientCode}).`
           : `Saved demo recipient for “${nickname}”. Add PAYSTACK_SECRET_KEY for live sandbox.`,
       );
       onSaved?.();

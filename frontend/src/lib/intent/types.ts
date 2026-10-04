@@ -11,7 +11,7 @@ export type PaymentSchedule =
   | { kind: "one_time" }
   | {
       kind: "recurring";
-      frequency: "weekly" | "monthly";
+      frequency: "weekly" | "monthly" | "daily";
       dayOfMonth?: number;
     };
 

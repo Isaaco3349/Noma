@@ -16,7 +16,12 @@ export function tokenAmountFromUsd(
 
 export function scheduleKindFromPlan(plan: PaymentPlan): number {
   if (plan.schedule.kind === "one_time") return ScheduleKind.OneTime;
-  if (plan.schedule.frequency === "weekly") return ScheduleKind.Weekly;
+  if (
+    plan.schedule.frequency === "weekly" ||
+    plan.schedule.frequency === "daily"
+  ) {
+    return ScheduleKind.Weekly;
+  }
   return ScheduleKind.Monthly;
 }
 

@@ -1,22 +1,51 @@
-const HINTS = [
-  "Send to family in Lagos on a schedule you choose",
-  "Set an amount in dollars and confirm before anything runs",
-  "One corridor: diaspora senders to Nigeria",
-] as const;
+"use client";
 
-/** Soft background copy — not chat messages. */
-export function ChatEmptyHints() {
+import { COMMAND_KEYWORDS, EXAMPLE_PROMPTS } from "@/lib/intent/commandHints";
+
+type ChatEmptyHintsProps = {
+  onTryExample?: (text: string) => void;
+};
+
+/** Center hints when chat is empty — not stored as messages. */
+export function ChatEmptyHints({ onTryExample }: ChatEmptyHintsProps) {
   return (
-    <div
-      className="pointer-events-none flex flex-1 flex-col items-center justify-center px-6 py-12 text-center"
-      aria-hidden
-    >
-      <p className="max-w-sm font-display text-lg text-text/25 sm:text-xl">
-        Start with who to pay and when.
+    <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
+      <p className="max-w-lg font-display text-lg text-text sm:text-xl">
+        Say who to pay, where in Nigeria, how much, and how often.
       </p>
-      <ul className="mt-6 max-w-md space-y-2 text-xs leading-relaxed text-text-muted/45 sm:text-sm">
-        {HINTS.map((line) => (
-          <li key={line}>{line}</li>
+      <p className="mt-2 max-w-md text-xs text-text-muted sm:text-sm">
+        Use any name and any Nigerian city or state. If bank details are missing,
+        Noma will send you to Recipients before confirm.
+      </p>
+
+      <dl className="mt-8 grid w-full max-w-lg gap-3 text-left sm:grid-cols-2">
+        {COMMAND_KEYWORDS.map(({ label, example }) => (
+          <div
+            key={label}
+            className="rounded-lg border border-border bg-surface px-3 py-2.5"
+          >
+            <dt className="text-[11px] font-medium uppercase tracking-wide text-text-muted">
+              {label}
+            </dt>
+            <dd className="mt-1 text-xs text-text sm:text-sm">{example}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="mt-8 text-xs font-medium text-text-muted">
+        Try an example
+      </p>
+      <ul className="mt-3 flex w-full max-w-xl flex-col gap-2">
+        {EXAMPLE_PROMPTS.map((prompt) => (
+          <li key={prompt}>
+            <button
+              type="button"
+              onClick={() => onTryExample?.(prompt)}
+              className="w-full rounded-lg border border-border bg-bg px-3 py-2.5 text-left text-xs text-text hover:bg-surface sm:text-sm"
+            >
+              {prompt}
+            </button>
+          </li>
         ))}
       </ul>
     </div>

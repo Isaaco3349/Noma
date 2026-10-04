@@ -14,6 +14,8 @@ type MessageListProps = {
   confirmingPlanId: string | null;
   onPlanConfirm: (messageId: string) => void;
   onPlanCancel: (messageId: string) => void;
+  onTryExample?: (text: string) => void;
+  onRecipientSaved?: () => void;
 };
 
 export function MessageList({
@@ -23,11 +25,13 @@ export function MessageList({
   confirmingPlanId,
   onPlanConfirm,
   onPlanCancel,
+  onTryExample,
+  onRecipientSaved,
 }: MessageListProps) {
   if (messages.length === 0) {
     return (
       <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto bg-bg">
-        <ChatEmptyHints />
+        <ChatEmptyHints onTryExample={onTryExample} />
       </div>
     );
   }
@@ -63,6 +67,8 @@ export function MessageList({
                       : undefined
                   }
                   confirmPending={confirmingPlanId === message.id}
+                  recipients={recipients}
+                  onRecipientSaved={onRecipientSaved}
                   onConfirm={() => onPlanConfirm(message.id)}
                   onCancel={() => onPlanCancel(message.id)}
                 />

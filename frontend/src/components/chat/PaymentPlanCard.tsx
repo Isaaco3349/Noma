@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { PlanRecipientSetup } from "@/components/recipients/PlanRecipientSetup";
 import {
   formatAmountLabel,
   formatScheduleLabel,
 } from "@/lib/intent/formatPlan";
 import type { PaymentPlan } from "@/lib/intent/types";
+import type { SavedRecipient } from "@/lib/recipients/types";
 import type { OfframpState } from "@/lib/tracking/types";
 import type { PlanChainState, PlanConfirmationStatus } from "./types";
 
@@ -21,6 +23,8 @@ type PaymentPlanCardProps = {
   offramp?: OfframpState;
   ngnEstimate?: { amount: number; rate: number; disclaimer: string };
   confirmPending?: boolean;
+  recipients?: SavedRecipient[];
+  onRecipientSaved?: () => void;
   onConfirm: () => void;
   onCancel: () => void;
 };
@@ -35,6 +39,8 @@ export function PaymentPlanCard({
   offramp,
   ngnEstimate,
   confirmPending,
+  recipients = [],
+  onRecipientSaved,
   onConfirm,
   onCancel,
 }: PaymentPlanCardProps) {
@@ -44,6 +50,8 @@ export function PaymentPlanCard({
 
   const confirmEnabled =
     canConfirm && recipientReady && !confirmPending;
+
+  const recipientSetupHref = `/app/recipients?nickname=${encodeURIComponent(plan.beneficiary)}&location=${encodeURIComponent(plan.location)}&returnTo=${encodeURIComponent("/app")}`;
 
   return (
     <div className="mt-2 w-full max-w-md lg:max-w-lg rounded-xl border border-border bg-surface p-4 shadow-sm">
@@ -100,13 +108,23 @@ export function PaymentPlanCard({
         </p>
       ) : null}
       {!recipientReady && isPending ? (
-        <p className="mt-3 text-xs text-semantic-error">
-          Add a recipient for “{plan.beneficiary}” in{" "}
-          <Link href="/app/recipients" className="underline underline-offset-2">
-            Recipients
-          </Link>{" "}
-          before confirming.
-        </p>
+        <>
+          <PlanRecipientSetup
+            plan={plan}
+            recipients={recipients}
+            onSaved={() => onRecipientSaved?.()}
+          />
+          <p className="mt-2 text-[11px] text-text-muted">
+            Or manage all beneficiaries in{" "}
+            <Link
+              href={recipientSetupHref}
+              className="underline underline-offset-2"
+            >
+              Recipients
+            </Link>
+            .
+          </p>
+        </>
       ) : null}
       {chain?.error ? (
         <p className="mt-2 text-xs text-semantic-error">{chain.error}</p>
