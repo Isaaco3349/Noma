@@ -15,6 +15,7 @@ import {
   readSessionAddress,
   writeSessionAddress,
 } from "@/lib/wallet/sessionSnapshot";
+import type { WalletClient } from "viem";
 import type { WalletAuthState, WalletProvider } from "@/lib/wallet/types";
 
 async function loadMeraWallet(): Promise<WalletProvider> {
@@ -31,6 +32,7 @@ type WalletContextValue = {
   signIn: () => Promise<boolean>;
   signOut: () => void;
   exportRecoveryPhrase: () => Promise<string>;
+  withWalletClient: () => Promise<WalletClient | null>;
 };
 
 const WalletContext = createContext<WalletContextValue | null>(null);
@@ -90,6 +92,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setError(null);
   }, []);
 
+  const withWalletClient = useCallback(async (): Promise<WalletClient | null> => {
+    try {
+      const wallet = await loadMeraWallet();
+      let client = wallet.getWalletClient();
+      if (!client) {
+        await wallet.signIn();
+        client = wallet.getWalletClient();
+      }
+      return client;
+    } catch {
+      return null;
+    }
+  }, []);
+
   const exportRecoveryPhrase = useCallback(async () => {
     setError(null);
     try {
@@ -112,6 +128,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       signIn,
       signOut,
       exportRecoveryPhrase,
+      withWalletClient,
     }),
     [
       auth,
@@ -122,6 +139,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       signIn,
       signOut,
       exportRecoveryPhrase,
+      withWalletClient,
     ],
   );
 

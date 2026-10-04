@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NomaLogo } from "@/components/brand/NomaLogo";
 import { BrandHeader } from "@/components/layout/BrandHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WalletAuth } from "@/components/wallet/WalletAuth";
 import { useWallet } from "@/components/wallet/WalletContext";
 
@@ -82,6 +83,17 @@ export function LandingPage() {
             ) : (
               <WalletAuth variant="hero" onSignedIn={goToApp} />
             )}
+            <p className="mt-4 text-xs leading-relaxed text-text-muted">
+              By using Noma you agree to our{" "}
+              <Link href="/legal/terms" className="underline hover:text-text">
+                Terms of use
+              </Link>{" "}
+              and{" "}
+              <Link href="/legal/privacy" className="underline hover:text-text">
+                Privacy policy
+              </Link>
+              .
+            </p>
           </div>
         </section>
 
@@ -102,11 +114,8 @@ export function LandingPage() {
           ))}
         </ul>
 
-        <p className="mt-14 border-t border-border pt-8 text-center text-xs leading-relaxed text-text-muted">
-          Orchestration only, not a money transmitter. Fiat payout is intended
-          through licensed partners.
-        </p>
       </main>
+      <SiteFooter />
     </div>
   );
 }

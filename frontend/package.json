@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --import tsx --test src/lib/intent/**/*.test.ts src/lib/paystack/config.test.ts",
+    "verify-env": "node scripts/verify-env.mjs"
   },
   "dependencies": {
     "@category-labs/mera": "^0.2.0",
@@ -28,6 +30,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.26",
     "tailwindcss": "^4",
+    "tsx": "^4.20.5",
     "typescript": "^5"
   }
 }
