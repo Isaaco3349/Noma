@@ -33,71 +33,78 @@ export function LandingPage() {
   const goToApp = () => router.push("/app");
 
   return (
-    <div className="min-h-dvh bg-bg text-text">
-      <header className="border-b border-border">
-        <BrandHeader
-          trailing={
-            <>
-              {auth.status === "signed_in" ? (
-                <Link
-                  href="/app"
-                  className="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium text-text hover:opacity-90"
-                >
-                  Open app
-                </Link>
-              ) : null}
-              <NomaLogo size="lg" tone="dark" />
-            </>
-          }
-        />
-      </header>
+    <div className="min-h-dvh bg-surface text-text">
+      <div className="mx-auto min-h-dvh w-full max-w-7xl border-x border-border bg-bg">
+        <header className="border-b border-border bg-surface">
+          <BrandHeader
+            trailing={
+              <>
+                {auth.status === "signed_in" ? (
+                  <Link
+                    href="/app"
+                    className="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium text-text hover:opacity-90"
+                  >
+                    Open app
+                  </Link>
+                ) : null}
+                <NomaLogo size="lg" tone="dark" />
+              </>
+            }
+          />
+        </header>
 
-      <main className="mx-auto max-w-4xl px-4 pb-16 pt-10 sm:px-8 sm:pt-14">
-        <section className="border-l-2 border-text pl-6 sm:pl-8">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
-            Cross-border payments
-          </p>
-          <h1 className="mt-4 max-w-xl font-display text-[2rem] font-semibold leading-[1.15] tracking-tight sm:text-[2.75rem]">
-            Send to Nigeria in plain language.
-          </h1>
-          <p className="mt-4 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">
-            Tell Noma who to pay and when. You review the plan before anything
-            runs. Sign in with a passkey, no password to memorize.
-          </p>
-        </section>
+        <main className="px-4 pb-16 pt-10 sm:px-8 sm:pt-14 lg:px-10">
+          <div className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-10">
+            <section className="border-l-2 border-text pl-6 sm:pl-8 lg:col-span-5">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
+                Cross-border payments
+              </p>
+              <h1 className="mt-4 font-display text-[2rem] font-semibold leading-[1.15] tracking-tight sm:text-[2.75rem] lg:text-[2.5rem] xl:text-[2.75rem]">
+                Send to Nigeria in plain language.
+              </h1>
+              <p className="mt-4 text-base leading-relaxed text-text-muted sm:text-lg">
+                Tell Noma who to pay and when. You review the plan before anything
+                runs. Sign in with a passkey, no password to memorize.
+              </p>
+            </section>
 
-        <section className="mt-14 rounded-lg border border-border bg-surface p-6 sm:p-8">
-          <h2 className="font-display text-xl font-semibold">Get started</h2>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-text-muted">
-            Create an account with your device passkey, or sign in if you already
-            have one. You will open the chat where plans are built and confirmed.
-          </p>
-          <div className="mt-8 border-t border-border pt-6">
-            {auth.status === "signed_in" ? (
-              <Link
-                href="/app"
-                className="inline-block rounded-md bg-text px-5 py-2.5 text-sm font-medium text-surface hover:opacity-90"
-              >
-                Continue to Noma
-              </Link>
-            ) : (
-              <WalletAuth variant="hero" onSignedIn={goToApp} />
-            )}
-            <p className="mt-4 text-xs leading-relaxed text-text-muted">
-              By using Noma you agree to our{" "}
-              <Link href="/legal/terms" className="underline hover:text-text">
-                Terms of use
-              </Link>{" "}
-              and{" "}
-              <Link href="/legal/privacy" className="underline hover:text-text">
-                Privacy policy
-              </Link>
-              .
-            </p>
+            <section className="mt-14 rounded-lg border border-border bg-surface p-6 sm:p-8 lg:col-span-7 lg:mt-0">
+              <h2 className="font-display text-xl font-semibold">Get started</h2>
+              <p className="mt-2 text-sm leading-relaxed text-text-muted">
+                Create an account with your device passkey, or sign in if you
+                already have one. You will open the chat where plans are built
+                and confirmed.
+              </p>
+              <div className="mt-8 border-t border-border pt-6">
+                {auth.status === "signed_in" ? (
+                  <Link
+                    href="/app"
+                    className="inline-block rounded-md bg-text px-5 py-2.5 text-sm font-medium text-surface hover:opacity-90"
+                  >
+                    Continue to Noma
+                  </Link>
+                ) : (
+                  <WalletAuth variant="hero" onSignedIn={goToApp} />
+                )}
+                <p className="mt-4 text-xs leading-relaxed text-text-muted">
+                  By using Noma you agree to our{" "}
+                  <Link href="/legal/terms" className="underline hover:text-text">
+                    Terms of use
+                  </Link>{" "}
+                  and{" "}
+                  <Link
+                    href="/legal/privacy"
+                    className="underline hover:text-text"
+                  >
+                    Privacy policy
+                  </Link>
+                  .
+                </p>
+              </div>
+            </section>
           </div>
-        </section>
 
-        <ul className="mt-14 grid gap-5 sm:grid-cols-3">
+          <ul className="mt-14 grid gap-5 sm:grid-cols-3">
           {FEATURES.map((item) => (
             <li
               key={item.n}
@@ -112,10 +119,10 @@ export function LandingPage() {
               </p>
             </li>
           ))}
-        </ul>
-
-      </main>
-      <SiteFooter />
+          </ul>
+        </main>
+        <SiteFooter />
+      </div>
     </div>
   );
 }
