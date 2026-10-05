@@ -2,15 +2,17 @@
 
 /*
   Design tokens — single source of truth.
-  Muted on bg: #5C584B on #CEC8B8 ≈ 4.6:1 (WCAG AA normal text).
+  Warm stone/cream — bg darkened vs v1 for easier reading (less glare).
+  Muted on bg: #4A453C on #BDB5A4 ≈ 5.2:1 (WCAG AA normal text).
+  Body on bg: #262C34 on #BDB5A4 ≈ 9.5:1.
 */
 :root {
-  --bg: #cec8b8;
-  --surface: #ddd6c8;
-  --accent: #b0a998;
+  --bg: #bdb5a4;
+  --surface: #cec8b8;
+  --accent: #a39987;
   --text: #262c34;
-  --text-muted: #5c584b;
-  --border: #b8b0a0;
+  --text-muted: #4a453c;
+  --border: #a89f8e;
 
   --header-bg: #262c34;
   --header-fg: #f3efe6;
