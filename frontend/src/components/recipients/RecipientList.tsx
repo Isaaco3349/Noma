@@ -11,7 +11,7 @@ export function RecipientList({ recipients }: RecipientListProps) {
   if (recipients.length === 0) {
     return (
       <p className="text-sm text-text-muted">
-        No recipients yet. Add Mum or another beneficiary below.
+        No recipients yet. Add a beneficiary below (any name + Nigerian city or state).
       </p>
     );
   }
@@ -25,10 +25,10 @@ export function RecipientList({ recipients }: RecipientListProps) {
         >
           <p className="font-medium text-text">
             {r.nickname}{" "}
-            <span className="font-normal text-text-muted">· {r.location}</span>
+            <span className="font-normal text-text-muted">, {r.location}</span>
           </p>
           <p className="text-xs text-text-muted">
-            {r.accountName} · {r.bankName} · ****
+            {r.accountName}, {r.bankName}, ****
             {r.accountNumber.slice(-4)}
           </p>
         </li>

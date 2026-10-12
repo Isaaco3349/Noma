@@ -73,7 +73,7 @@ export function parsePaymentIntent(raw: string): ParseResult {
 
   if (OUT_OF_CORRIDOR.test(text) && !/\bnigeria\b/i.test(text)) {
     return failure(
-      "Noma only supports the Nigeria corridor right now. Name a Nigerian city or state (e.g. Enugu, Kano, Lagos).",
+      "Noma only supports the Nigeria corridor right now. Name a Nigerian city or state (e.g. Lagos, Abuja).",
       [],
     );
   }
@@ -90,6 +90,23 @@ export function parsePaymentIntent(raw: string): ParseResult {
   if (!schedule) missing.push("schedule");
 
   if (missing.length > 0) {
+    if (
+      missing.length === 1 &&
+      missing[0] === "schedule" &&
+      amountUsd != null &&
+      beneficiary &&
+      location
+    ) {
+      const plan: PaymentPlan = {
+        amountUsd,
+        beneficiary,
+        location,
+        schedule: { kind: "one_time" },
+        corridor: "NG",
+      };
+      return { ok: true, plan };
+    }
+
     if (mentionsUnsupportedRail(text)) {
       return failure(buildUnsupportedRailMessage(missing), missing);
     }
@@ -160,6 +177,23 @@ function parseAmount(text: string): number | null {
   const spoken = parseSpokenDollarAmount(text);
   if (spoken != null) return spoken;
 
+  const wordAfterSend = parseWordAmountAfterSendPay(text);
+  if (wordAfterSend != null) return wordAfterSend;
+
+  return null;
+}
+
+/** Voice: "send fifty to chidi in enugu" (no "dollars" suffix). */
+function parseWordAmountAfterSendPay(text: string): number | null {
+  const lower = text.toLowerCase();
+  const match = lower.match(
+    /\b(?:send|pay)\s+(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b/,
+  );
+  if (!match) return null;
+  const word = match[1]!;
+  if (word === "hundred") return 100;
+  const n = WORD_ONES[word] ?? WORD_TENS[word];
+  if (n != null && n > 0 && n <= 1_000_000) return n;
   return null;
 }
 
@@ -259,11 +293,19 @@ function parseLocation(text: string): string | null {
 
   if (/\bnigeria\b/i.test(text)) return "Nigeria";
 
-  const inMatch = lower.match(/\b(?:in|at)\s+([a-z][a-z\s]{1,28})\b/);
+  const inMatch = lower.match(/\b(?:in|at)\s+([a-z][a-z\s-]{1,40})/);
   if (inMatch) {
-    const candidate = inMatch[1]!.trim();
+    let candidate = inMatch[1]!.trim();
+    candidate = candidate.replace(
+      /\s+(every|just|once|on the|on\b|this|today|asap).*$/,
+      "",
+    );
     const resolved = resolveNigeriaPlace(candidate);
     if (resolved) return resolved;
+    for (const key of NIGERIA_PLACE_KEYS) {
+      if (key === "nigeria") continue;
+      if (candidate.includes(key)) return NIGERIA_PLACES[key]!;
+    }
   }
 
   return null;
@@ -355,11 +397,11 @@ function buildMissingMessage(
     parts.push("who receives it (name or relation, e.g. Chidi or my cousin)");
   }
   if (missing.includes("location")) {
-    parts.push("where in Nigeria (city or state, e.g. Enugu or Rivers state)");
+    parts.push("where in Nigeria (city or state, e.g. Lagos or Abuja)");
   }
   if (missing.includes("schedule")) {
     parts.push(
-      "when (once, daily, weekly, or monthly — e.g. every month on the 2nd)",
+      "when (once, daily, weekly, or monthly, e.g. every month on the 2nd)",
     );
   }
   return `I need a bit more: ${parts.join(", ")}.`;

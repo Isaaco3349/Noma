@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { PlanRecipientSetup } from "@/components/recipients/PlanRecipientSetup";
+import { PlanSelectedRecipient } from "@/components/recipients/PlanSelectedRecipient";
 import {
   formatAmountLabel,
   formatScheduleLabel,
@@ -18,6 +20,7 @@ type PaymentPlanCardProps = {
   status: PlanConfirmationStatus;
   canConfirm: boolean;
   recipientReady: boolean;
+  matchedRecipient?: SavedRecipient;
   chainHint?: string;
   chain?: PlanChainState;
   offramp?: OfframpState;
@@ -34,6 +37,7 @@ export function PaymentPlanCard({
   status,
   canConfirm,
   recipientReady,
+  matchedRecipient,
   chainHint,
   chain,
   offramp,
@@ -48,8 +52,17 @@ export function PaymentPlanCard({
   const isConfirmed = status === "confirmed";
   const isCancelled = status === "cancelled";
 
+  const [changePayout, setChangePayout] = useState(false);
+
+  useEffect(() => {
+    if (recipientReady) setChangePayout(false);
+  }, [matchedRecipient?.id, recipientReady]);
+
   const confirmEnabled =
     canConfirm && recipientReady && !confirmPending;
+
+  const showPayoutPicker =
+    isPending && (!recipientReady || changePayout);
 
   const recipientSetupHref = `/app/recipients?nickname=${encodeURIComponent(plan.beneficiary)}&location=${encodeURIComponent(plan.location)}&returnTo=${encodeURIComponent("/app")}`;
 
@@ -87,7 +100,7 @@ export function PaymentPlanCard({
           </div>
         ) : null}
         <div className="flex justify-between gap-4">
-          <dt className="text-text-muted">To</dt>
+          <dt className="text-text-muted">To (name & place)</dt>
           <dd className="text-right font-medium text-text">
             {plan.beneficiary}
             <span className="block text-xs font-normal text-text-muted">
@@ -107,25 +120,47 @@ export function PaymentPlanCard({
           {ngnEstimate.disclaimer}
         </p>
       ) : null}
-      {!recipientReady && isPending ? (
+
+      {isPending ? (
         <>
-          <PlanRecipientSetup
-            plan={plan}
-            recipients={recipients}
-            onSaved={() => onRecipientSaved?.()}
-          />
-          <p className="mt-2 text-[11px] text-text-muted">
-            Or manage all beneficiaries in{" "}
-            <Link
-              href={recipientSetupHref}
-              className="underline underline-offset-2"
-            >
-              Recipients
-            </Link>
-            .
-          </p>
+          {recipientReady && matchedRecipient && !changePayout ? (
+            <PlanSelectedRecipient
+              recipient={matchedRecipient}
+              onChangeAccount={() => setChangePayout(true)}
+            />
+          ) : null}
+
+          {showPayoutPicker ? (
+            <>
+              {!recipientReady ? (
+                <p className="mt-3 rounded-md border border-semantic-error/40 bg-bg px-3 py-2 text-xs text-semantic-error">
+                  Choose a saved Nigerian bank account or enter a new one below.
+                  Confirm stays disabled until payout details are set.
+                </p>
+              ) : null}
+              <PlanRecipientSetup
+                plan={plan}
+                recipients={recipients}
+                onSaved={() => {
+                  setChangePayout(false);
+                  onRecipientSaved?.();
+                }}
+              />
+              <p className="mt-2 text-[11px] text-text-muted">
+                Or manage all beneficiaries in{" "}
+                <Link
+                  href={recipientSetupHref}
+                  className="underline underline-offset-2"
+                >
+                  Recipients
+                </Link>
+                .
+              </p>
+            </>
+          ) : null}
         </>
       ) : null}
+
       {chain?.error ? (
         <p className="mt-2 text-xs text-semantic-error">{chain.error}</p>
       ) : null}
@@ -143,11 +178,11 @@ export function PaymentPlanCard({
           }`}
         >
           NGN (Paystack {offramp.mode}
-          {offramp.fallbackFromLive ? ", sandbox unfunded → demo" : ""}):{" "}
+          {offramp.fallbackFromLive ? ", sandbox unfunded, demo mode" : ""}):{" "}
           {offramp.status === "failed"
             ? offramp.error
             : offramp.ngnAmount
-              ? `₦${offramp.ngnAmount.toLocaleString()} — ${offramp.status}`
+              ? `₦${offramp.ngnAmount.toLocaleString()}, ${offramp.status}`
               : offramp.status}
           {offramp.paystackReference
             ? ` (ref ${offramp.paystackReference})`
@@ -171,7 +206,7 @@ export function PaymentPlanCard({
           </a>
           {chain.executeTxHash ? (
             <>
-              {" · "}
+              {" and "}
               <a
                 className="text-text underline underline-offset-2"
                 href={`${EXPLORER}${chain.executeTxHash}`}
@@ -191,6 +226,15 @@ export function PaymentPlanCard({
               Sign in with your passkey (header) to confirm this plan.
             </p>
           ) : null}
+          {!recipientReady ? (
+            <p className="mt-2 text-xs text-text-muted">
+              After you select or save a bank account above, Confirm will unlock.
+            </p>
+          ) : (
+            <p className="mt-2 text-xs text-text-muted">
+              Confirm only if the Nigerian account above is correct.
+            </p>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               type="button"
@@ -198,7 +242,7 @@ export function PaymentPlanCard({
               onClick={onConfirm}
               className="rounded-lg bg-text px-4 py-2 text-sm font-medium text-surface transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {confirmPending ? "Confirming…" : "Confirm"}
+              {confirmPending ? "Confirming…" : "Confirm payout & plan"}
             </button>
             <button
               type="button"

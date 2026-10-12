@@ -122,7 +122,7 @@ export function ChatInput({ onSend, speaking }: ChatInputProps) {
         : "Speak your payment instruction";
 
   return (
-    <div className="border-t border-border bg-surface lg:px-4">
+    <div className="shrink-0 border-t border-border bg-surface lg:px-4">
       {voiceError ? (
         <p className="px-4 pt-2 text-xs text-semantic-error" role="status">
           {voiceError}
@@ -150,7 +150,7 @@ export function ChatInput({ onSend, speaking }: ChatInputProps) {
           rows={1}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder="e.g. Send $50 to Chidi in Enugu every month"
+          placeholder="e.g. Send $50 to anyone in any Nigerian city, once or monthly"
           className="min-h-[44px] flex-1 resize-none rounded-xl border border-border bg-bg px-3 py-2.5 text-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-accent/60"
         />
         <button

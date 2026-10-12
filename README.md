@@ -1,12 +1,12 @@
 # Noma
 
-Noma is a voice- and text-driven cross-border payment agent for the **diaspora → Nigeria** corridor, built for [Monad Metropolis](https://www.monad.xyz/) **Track 02: Consumer Products & Payments**.
+Noma is a voice and text cross-border payment agent for the **diaspora to Nigeria** corridor, built for [Monad Metropolis](https://www.monad.xyz/) **Track 02: Consumer Products & Payments**.
 
-You say or type: *“Send $100 to my mum in Lagos on the 2nd of every month.”* Noma turns that into a structured payment plan, you **confirm**, and settlement runs on **Monad** behind the scenes. Senders should not have to think about chains, gas, or routing.
+You say or type something like *“Send $100 to family in Lagos on the 2nd of every month.”* Noma turns that into a structured payment plan, you **confirm**, and settlement runs on **Monad** behind the scenes. Senders should not have to think about chains, gas, or routing.
 
 ## The problem
 
-Remittance to Nigeria is expensive and fragmented: multiple apps, opaque FX, and Web3 friction for diaspora senders. Noma focuses on **one corridor** and one flow—**plan → confirm → execute → track**.
+Remittance to Nigeria is expensive and fragmented: multiple apps, opaque FX, and Web3 friction for diaspora senders. Noma focuses on **one corridor** and one flow: **plan, confirm, execute, track**.
 
 ## Monad Metropolis submission
 
@@ -72,7 +72,7 @@ End-to-end reference: [docs/architecture.md](docs/architecture.md).
 | Paystack live test API; **auto** demo NGN when sandbox unfunded | Aurora cross-chain funding |
 | Rule-based parser, recipients, history, MonadVision tx links | Licensed remittance operator claims |
 
-**Try in UI:** `Send $10 to my mum in Lagos just once` → sign in → add bank on plan or use saved recipient → **Confirm** (passkey needs **MON + settlement token** on the passkey address).
+**Try in UI:** `Send $10 to a friend in Lagos just once` → sign in → add bank on plan or use saved recipient → **Confirm** (passkey needs **MON + settlement token** on the passkey address).
 
 ## Tech stack
 

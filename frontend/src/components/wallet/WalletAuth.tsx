@@ -129,8 +129,54 @@ export function WalletAuth({
 
     return (
       <>
-        <div className="rounded-lg border border-border bg-surface p-3 sm:p-4">
-          <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 sm:gap-x-8">
+        <div className="rounded-lg border border-border bg-surface p-3 lg:p-3">
+          {/* Desktop: compact bar so chat keeps most of the viewport */}
+          <div className="hidden lg:flex lg:flex-wrap lg:items-center lg:gap-x-4 lg:gap-y-2">
+            <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+              Wallet
+            </span>
+            <code className="max-w-[min(28rem,36vw)] truncate rounded-md border border-border bg-bg px-2 py-1 font-mono text-[11px] text-text">
+              {auth.address}
+            </code>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                className={buttonClass}
+                onClick={() => void copyAddress()}
+              >
+                {addressCopied ? "Copied" : "Copy"}
+              </button>
+              <a
+                href={MONAD_TESTNET_FAUCET_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${buttonClass} inline-flex border-accent bg-accent/20`}
+              >
+                Faucet
+              </a>
+            </div>
+            <span className="text-xs text-text-muted">
+              <span className="font-medium text-text">{balanceLabel}</span>
+            </span>
+            <button
+              type="button"
+              className="text-xs text-text-muted underline hover:text-text"
+              onClick={() => setExportOpen(true)}
+            >
+              Recovery phrase
+            </button>
+            <button
+              type="button"
+              className={`${buttonClass} ml-auto`}
+              onClick={signOut}
+              disabled={busy}
+            >
+              Sign out
+            </button>
+          </div>
+
+          {/* Mobile / tablet: stacked card */}
+          <dl className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2 sm:gap-x-8 lg:hidden">
             <div className="sm:col-span-2">
               <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
                 Wallet address (Monad testnet)
@@ -159,7 +205,7 @@ export function WalletAuth({
                 {needsMon ? (
                   <p className="text-[11px] leading-relaxed text-text-muted sm:text-xs">
                     New accounts start at 0 MON. Copy the address above, open
-                    the faucet, paste it, and request test MON — no seed phrase
+                    the faucet, paste it, and request test MON. No seed phrase
                     or external wallet required.
                   </p>
                 ) : null}
@@ -174,7 +220,7 @@ export function WalletAuth({
               </dd>
             </div>
           </dl>
-          <div className="mt-4 flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="mt-4 flex flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between lg:hidden">
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
               <button
                 type="button"

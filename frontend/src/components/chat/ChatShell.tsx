@@ -26,7 +26,7 @@ import { ReadRepliesToggle } from "./ReadRepliesToggle";
 import type { ChatMessage } from "./types";
 
 const ASSISTANT_SUCCESS =
-  "Here’s the plan I understood. Review and confirm before anything runs on Monad.";
+  "Here’s the plan I understood. Choose or verify the Nigerian bank account on the card, then confirm before anything runs on Monad.";
 
 export function ChatShell() {
   const { auth, withWalletClient } = useWallet();
@@ -170,7 +170,7 @@ export function ChatShell() {
         if (!client) {
           chain = {
             pending: false,
-            error: "Passkey session required — use Sign in, then confirm again.",
+            error: "Passkey session required. Use Sign in, then confirm again.",
           };
         } else {
           try {
@@ -208,7 +208,7 @@ export function ChatShell() {
         }
       } else {
         chainHint =
-          "Monad addresses not set — off-chain confirm with Paystack orchestration only.";
+          "Monad addresses not set. Off-chain confirm with Paystack orchestration only.";
         chain = { pending: false, hint: chainHint };
         offramp = await requestDisburse({
           amountUsd: target.plan.amountUsd,
@@ -266,7 +266,7 @@ export function ChatShell() {
   const handlePlanCancel = useCallback(
     (messageId: string) => {
       const cancelledBody =
-        "No problem — I won’t run this plan. You can send a new instruction anytime.";
+        "No problem. I won’t run this plan. You can send a new instruction anytime.";
 
       setMessages((prev) =>
         prev.map((message) =>
@@ -288,7 +288,7 @@ export function ChatShell() {
   );
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex flex-col">
       <ReadRepliesToggle onChange={setReadAloud} />
       <MessageList
         messages={messages}

@@ -22,7 +22,7 @@ const FEATURES = [
   {
     n: "03",
     title: "One corridor",
-    body: "Diaspora → Nigeria on Monad testnet, scope kept intentionally narrow.",
+    body: "Diaspora to Nigeria on Monad testnet. Scope kept intentionally narrow.",
   },
 ] as const;
 
@@ -33,49 +33,51 @@ export function LandingPage() {
   const goToApp = () => router.push("/app");
 
   return (
-    <div className="min-h-dvh bg-surface text-text">
-      <div className="mx-auto min-h-dvh w-full max-w-7xl border-x border-border bg-bg">
-        <header className="border-b border-border bg-surface">
-          <BrandHeader
-            trailing={
-              <>
-                {auth.status === "signed_in" ? (
-                  <Link
-                    href="/app"
-                    className="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium text-text hover:opacity-90"
-                  >
-                    Open app
-                  </Link>
-                ) : null}
-                <NomaLogo size="lg" tone="dark" />
-              </>
-            }
-          />
-        </header>
+    <div className="flex min-h-dvh flex-col bg-bg text-text">
+      <header className="shrink-0 border-b border-border bg-surface">
+        <BrandHeader
+          trailing={
+            <>
+              {auth.status === "signed_in" ? (
+                <Link
+                  href="/app"
+                  className="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium text-text hover:opacity-90"
+                >
+                  Open app
+                </Link>
+              ) : null}
+              <NomaLogo size="lg" tone="dark" />
+            </>
+          }
+        />
+      </header>
 
-        <main className="px-4 pb-16 pt-10 sm:px-8 sm:pt-14 lg:px-10">
-          <div className="lg:grid lg:grid-cols-12 lg:items-start lg:gap-10">
-            <section className="border-l-2 border-text pl-6 sm:pl-8 lg:col-span-5">
+      <main className="flex flex-1 flex-col">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:py-24">
+          <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16 xl:gap-20">
+            <section className="border-l-2 border-text pl-6 sm:pl-8 lg:max-w-xl lg:pl-10">
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
                 Cross-border payments
               </p>
-              <h1 className="mt-4 font-display text-[2rem] font-semibold leading-[1.15] tracking-tight sm:text-[2.75rem] lg:text-[2.5rem] xl:text-[2.75rem]">
+              <h1 className="mt-4 font-display text-[2rem] font-semibold leading-[1.15] tracking-tight sm:text-[2.75rem] lg:text-[2.625rem] xl:text-[3rem]">
                 Send to Nigeria in plain language.
               </h1>
-              <p className="mt-4 text-base leading-relaxed text-text-muted sm:text-lg">
+              <p className="mt-5 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">
                 Tell Noma who to pay and when. You review the plan before anything
                 runs. Sign in with a passkey, no password to memorize.
               </p>
             </section>
 
-            <section className="mt-14 rounded-lg border border-border bg-surface p-6 sm:p-8 lg:col-span-7 lg:mt-0">
-              <h2 className="font-display text-xl font-semibold">Get started</h2>
-              <p className="mt-2 text-sm leading-relaxed text-text-muted">
+            <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-8 lg:p-10">
+              <h2 className="font-display text-xl font-semibold sm:text-2xl">
+                Get started
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-text-muted sm:text-base">
                 Create an account with your device passkey, or sign in if you
                 already have one. You will open the chat where plans are built
                 and confirmed.
               </p>
-              <div className="mt-8 border-t border-border pt-6">
+              <div className="mt-8 border-t border-border pt-8">
                 {auth.status === "signed_in" ? (
                   <Link
                     href="/app"
@@ -104,25 +106,26 @@ export function LandingPage() {
             </section>
           </div>
 
-          <ul className="mt-14 grid gap-5 sm:grid-cols-3">
-          {FEATURES.map((item) => (
-            <li
-              key={item.n}
-              className="rounded-lg border border-border bg-surface p-5"
-            >
-              <p className="font-mono text-xs text-accent">{item.n}</p>
-              <p className="mt-3 font-display text-lg font-semibold">
-                {item.title}
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-text-muted">
-                {item.body}
-              </p>
-            </li>
-          ))}
+          <ul className="mt-16 grid gap-6 sm:grid-cols-3 lg:mt-24 xl:mt-28">
+            {FEATURES.map((item) => (
+              <li
+                key={item.n}
+                className="rounded-xl border border-border bg-surface p-6 shadow-sm"
+              >
+                <p className="font-mono text-xs text-accent">{item.n}</p>
+                <p className="mt-3 font-display text-lg font-semibold">
+                  {item.title}
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-text-muted">
+                  {item.body}
+                </p>
+              </li>
+            ))}
           </ul>
-        </main>
-        <SiteFooter />
-      </div>
+        </div>
+      </main>
+
+      <SiteFooter className="mt-auto shrink-0 bg-surface" />
     </div>
   );
 }

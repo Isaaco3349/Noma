@@ -12,7 +12,7 @@ export function BrandTitleBlock({ size = "lg" }: BrandTitleBlockProps) {
         Noma
       </p>
       <p className="mt-0.5 text-xs tracking-wide text-header-muted">
-        Diaspora → Nigeria · Monad testnet
+        Diaspora to Nigeria, Monad testnet
       </p>
     </div>
   );

@@ -3,7 +3,7 @@ import { WalletShell } from "@/components/wallet/WalletShell";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Noma — Nigeria corridor payments",
+  title: "Noma | Nigeria corridor payments",
   description:
     "Voice- and text-driven cross-border payment plans for diaspora senders to Nigeria, on Monad.",
 };

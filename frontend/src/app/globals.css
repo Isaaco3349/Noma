@@ -2,17 +2,16 @@
 
 /*
   Design tokens — single source of truth.
-  Warm stone/cream — bg darkened vs v1 for easier reading (less glare).
+  Warm stone: page = mid tan; panels/header = deeper tan (not washed-out cream).
   Muted on bg: #4A453C on #BDB5A4 ≈ 5.2:1 (WCAG AA normal text).
-  Body on bg: #262C34 on #BDB5A4 ≈ 9.5:1.
 */
 :root {
   --bg: #bdb5a4;
-  --surface: #cec8b8;
-  --accent: #a39987;
+  --surface: #9a9285;
+  --accent: #8a8172;
   --text: #262c34;
-  --text-muted: #4a453c;
-  --border: #a89f8e;
+  --text-muted: #3d3830;
+  --border: #857c6e;
 
   --header-bg: #262c34;
   --header-fg: #f3efe6;

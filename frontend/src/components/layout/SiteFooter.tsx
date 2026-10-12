@@ -1,12 +1,17 @@
 import Link from "next/link";
 
-export function SiteFooter({ compact = false }: { compact?: boolean }) {
+type SiteFooterProps = {
+  compact?: boolean;
+  className?: string;
+};
+
+export function SiteFooter({ compact = false, className = "" }: SiteFooterProps) {
   return (
     <footer
       className={
         compact
-          ? "border-t border-border bg-surface px-4 py-3 text-center sm:px-6"
-          : "border-t border-border px-4 py-8 text-center sm:px-8"
+          ? `border-t border-border bg-surface px-4 py-3 text-center sm:px-6 ${className}`.trim()
+          : `border-t border-border px-4 py-10 text-center sm:px-8 lg:py-12 ${className}`.trim()
       }
     >
       <nav

@@ -42,7 +42,7 @@ export function PlanHistoryList({ plans }: PlanHistoryListProps) {
               Monad plan #{entry.chain.planId}
               {entry.chain.executeTxHash ? (
                 <>
-                  {" · "}
+                  {", "}
                   <a
                     className="underline"
                     href={`${EXPLORER}${entry.chain.executeTxHash}`}
@@ -64,7 +64,7 @@ export function PlanHistoryList({ plans }: PlanHistoryListProps) {
                   ? `₦${entry.offramp.ngnAmount.toLocaleString()} NGN`
                   : entry.offramp.status}
               {entry.offramp.paystackReference
-                ? ` · ref ${entry.offramp.paystackReference}`
+                ? `, ref ${entry.offramp.paystackReference}`
                 : null}
             </p>
           ) : null}

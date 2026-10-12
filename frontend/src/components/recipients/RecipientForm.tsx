@@ -78,8 +78,8 @@ export function RecipientForm({
       className="space-y-4 rounded-xl border border-border bg-surface p-4"
     >
       <p className="text-xs text-text-muted">
-        Paystack transfer recipient (API {mode} — banks/recipients only). Nickname should match chat
-        (e.g. Mum, Sister) for auto-match on confirm.
+        Paystack transfer recipient (API {mode}, banks and recipients only). Nickname should match chat
+        (same spelling as in chat, e.g. Chidi, Ada) for auto-match on confirm.
       </p>
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="block text-sm">
@@ -89,7 +89,7 @@ export function RecipientForm({
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             className="mt-1 w-full rounded-lg border border-border bg-bg px-3 py-2 text-sm"
-            placeholder="Mum"
+            placeholder="Chidi"
           />
         </label>
         <label className="block text-sm">

@@ -53,35 +53,31 @@ export function AgoraSettlementStrip() {
       : "Demo token (swap to AUSD for production)";
 
   return (
-    <p className="mt-2 text-center text-[11px] leading-snug text-text-muted sm:text-xs">
+    <p className="mt-2 text-center text-[11px] leading-snug text-text-muted sm:text-xs lg:mt-1 lg:text-left">
       Settlement:{" "}
       <span className="font-medium text-text">{issuerLabel}</span>
       {status.agora.metricsPublic && monadSupply ? (
-        <>
-          {" "}
-          · live Agora metrics · ~{monadSupply} on Monad
-        </>
+        <span>
+          . Live Agora metrics, ~{monadSupply} on Monad
+        </span>
       ) : null}
       {status.agora.apiKeyConfigured ? (
-        <>
-          {" "}
-          · Agora API{" "}
+        <span>
+          . Agora API{" "}
           {status.agora.apiKeyValid ? "connected" : "key pending"}
-        </>
+        </span>
       ) : null}
       {chain && !chain.chainReady ? (
-        <>
-          <span className="mt-1 block text-semantic-error">
-            Monad contracts not configured
-            {chain.missing.length > 0
-              ? `: ${chain.missing.join(", ")}`
-              : ""}
-          </span>
-        </>
+        <span className="text-semantic-error">
+          . Monad contracts not configured
+          {chain.missing.length > 0
+            ? `: ${chain.missing.join(", ")}`
+            : ""}
+        </span>
       ) : null}
       {chain?.chainReady ? (
-        <span className="mt-1 block text-semantic-success">
-          Monad on-chain confirm enabled
+        <span className="text-semantic-success">
+          . Monad on-chain confirm enabled
         </span>
       ) : null}
     </p>

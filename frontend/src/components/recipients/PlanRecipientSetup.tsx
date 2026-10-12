@@ -103,10 +103,11 @@ export function PlanRecipientSetup({
   return (
     <div className="mt-3 space-y-3 rounded-lg border border-border bg-bg p-3">
       <p className="text-xs font-medium text-text">
-        Payout details for {plan.beneficiary} ({plan.location})
+        Choose or add Nigerian bank account
       </p>
       <p className="text-[11px] leading-relaxed text-text-muted">
-        Add bank details here, then confirm on this plan — no need to leave chat.
+        For {plan.beneficiary} in {plan.location}. Pick a saved account (shows
+        bank name and last 4 digits) or enter a new account number below.
       </p>
 
       {matchingRecipients.length > 0 ? (
@@ -123,17 +124,17 @@ export function PlanRecipientSetup({
                   onClick={() => {
                     onSaved();
                     setSuccess(
-                      `Using ${r.nickname} · ${r.location}. Confirm below.`,
+                      `Using ${r.nickname}, ${r.location}. Confirm below.`,
                     );
                     setError(null);
                   }}
                   className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-left text-xs hover:bg-bg disabled:opacity-50"
                 >
                   <span className="font-medium text-text">
-                    {r.nickname} · {r.location}
+                    {r.nickname}, {r.location}
                   </span>
                   <span className="mt-0.5 block text-text-muted">
-                    {r.accountName} · {r.bankName} · ****
+                    {r.accountName}, {r.bankName}, ****
                     {r.accountNumber.slice(-4)}
                   </span>
                 </button>
@@ -156,10 +157,10 @@ export function PlanRecipientSetup({
                   className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-left text-xs hover:bg-bg disabled:opacity-50"
                 >
                   <span className="font-medium text-text">
-                    {r.nickname} · {r.location}
+                    {r.nickname}, {r.location}
                   </span>
                   <span className="mt-0.5 block text-text-muted">
-                    {r.accountName} · {r.bankName} · ****
+                    {r.accountName}, {r.bankName}, ****
                     {r.accountNumber.slice(-4)}
                   </span>
                 </button>

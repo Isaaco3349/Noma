@@ -9,13 +9,13 @@ type ChatEmptyHintsProps = {
 /** Center hints when chat is empty — not stored as messages. */
 export function ChatEmptyHints({ onTryExample }: ChatEmptyHintsProps) {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center px-6 py-10 text-center">
+    <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-4 py-8 text-center sm:px-6 sm:py-10">
       <p className="max-w-lg font-display text-lg text-text sm:text-xl">
         Say who to pay, where in Nigeria, how much, and how often.
       </p>
       <p className="mt-2 max-w-md text-xs text-text-muted sm:text-sm">
-        Use any name and any Nigerian city or state. If bank details are missing,
-        Noma will send you to Recipients before confirm.
+        Any person, any Nigerian city or state. If bank details are missing, add
+        them on the plan card before confirm.
       </p>
 
       <dl className="mt-8 grid w-full max-w-lg gap-3 text-left sm:grid-cols-2">

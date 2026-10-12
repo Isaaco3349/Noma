@@ -30,14 +30,14 @@ export function MessageList({
 }: MessageListProps) {
   if (messages.length === 0) {
     return (
-      <div className="relative flex min-h-0 flex-1 flex-col overflow-y-auto bg-bg">
+      <div className="relative bg-bg">
         <ChatEmptyHints onTryExample={onTryExample} />
       </div>
     );
   }
 
   return (
-    <ul className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 overflow-y-auto bg-bg px-4 py-6 sm:px-6 lg:max-w-5xl lg:px-8">
+    <ul className="mx-auto flex w-full max-w-4xl flex-col gap-4 bg-bg px-4 py-6 sm:px-6 lg:max-w-5xl lg:px-8">
       {messages.map((message) => {
         const matched =
           message.plan &&
@@ -58,6 +58,7 @@ export function MessageList({
                   status={message.planStatus ?? "pending"}
                   canConfirm={canConfirmPlans}
                   recipientReady={recipientReady}
+                  matchedRecipient={matched ?? undefined}
                   chain={message.chain}
                   offramp={message.offramp}
                   ngnEstimate={message.ngnEstimate}

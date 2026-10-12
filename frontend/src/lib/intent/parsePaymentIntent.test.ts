@@ -62,6 +62,22 @@ test("parses arbitrary name and Enugu with daily schedule", () => {
   }
 });
 
+test("defaults to one-time when amount, who, and place are present", () => {
+  const result = parsePaymentIntent("Send $40 to Tunde in Ogun state");
+  assert.equal(result.ok, true);
+  if (!result.ok) return;
+  assert.equal(result.plan.schedule.kind, "one_time");
+});
+
+test("parses voice amount without dollars word", () => {
+  const result = parsePaymentIntent("send fifty to chidi in enugu");
+  assert.equal(result.ok, true);
+  if (!result.ok) return;
+  assert.equal(result.plan.amountUsd, 50);
+  assert.equal(result.plan.beneficiary, "Chidi");
+  assert.equal(result.plan.location, "Enugu");
+});
+
 test("parses spoken hundred dollars and once (voice-style)", () => {
   const result = parsePaymentIntent(
     "send hundred dollar to my mom in Lagos once",

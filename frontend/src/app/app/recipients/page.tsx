@@ -31,8 +31,8 @@ function RecipientsPageContent() {
           Recipients
         </h1>
         <p className="mt-1 max-w-2xl text-sm text-text-muted">
-          Save bank details for anyone you pay in chat — use the same nickname
-          and city or state (e.g. Chidi · Enugu).
+          Save bank details for anyone you pay in chat. Use the same nickname
+          and city or state (e.g. Ada, Lagos).
         </p>
       </div>
       <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
