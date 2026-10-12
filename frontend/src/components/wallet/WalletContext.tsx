@@ -92,15 +92,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     setError(null);
   }, []);
 
+  /** Re-unlock passkey (PRF) before every on-chain tx — do not reuse an in-memory session silently. */
   const withWalletClient = useCallback(async (): Promise<WalletClient | null> => {
     try {
       const wallet = await loadMeraWallet();
-      let client = wallet.getWalletClient();
-      if (!client) {
-        await wallet.signIn();
-        client = wallet.getWalletClient();
-      }
-      return client;
+      await wallet.signIn();
+      return wallet.getWalletClient();
     } catch {
       return null;
     }

@@ -1,15 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatEther } from "viem";
+import { formatEther, formatUnits } from "viem";
 import { createPublicClient, http } from "viem";
-import { monadTestnet } from "@/lib/chains/monadTestnet";
+import { AUSD_MONAD_TESTNET_ADDRESS } from "@/lib/agora/constants";
 import { requestTestnetAusd } from "@/lib/agora/ausdFaucet";
+import { monadTestnet } from "@/lib/chains/monadTestnet";
+import { erc20Abi } from "@/lib/contracts/abis";
+import { getNomaChainConfig } from "@/lib/contracts/config";
 import { MONAD_TESTNET_FAUCET_URL } from "@/lib/wallet/constants";
 import { ExportRecoveryModal } from "./ExportRecoveryModal";
 import { useWallet } from "./WalletContext";
 
 const MONAD_EXPLORER_TX = "https://testnet.monadvision.com/tx/";
+
+function settlementTokenSymbol(token: `0x${string}`): string {
+  return token.toLowerCase() === AUSD_MONAD_TESTNET_ADDRESS.toLowerCase()
+    ? "AUSD"
+    : "Demo";
+}
+
+function formatSettlementBalance(raw: string): string {
+  const n = Number.parseFloat(raw);
+  if (!Number.isFinite(n)) return raw;
+  if (n >= 1000) {
+    return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  }
+  if (n >= 1) {
+    return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  }
+  return n.toLocaleString(undefined, { maximumFractionDigits: 4 });
+}
 
 type WalletAuthProps = {
   variant?: "appBar" | "hero";
@@ -24,6 +45,11 @@ export function WalletAuth({
     useWallet();
   const [balanceMon, setBalanceMon] = useState<string | null>(null);
   const [balanceError, setBalanceError] = useState(false);
+  const [balanceSettlement, setBalanceSettlement] = useState<string | null>(
+    null,
+  );
+  const [settlementBalanceError, setSettlementBalanceError] = useState(false);
+  const [balanceRefreshKey, setBalanceRefreshKey] = useState(0);
   const [exportOpen, setExportOpen] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
   const [ausdBusy, setAusdBusy] = useState(false);
@@ -46,6 +72,8 @@ export function WalletAuth({
     if (auth.status !== "signed_in") {
       setBalanceMon(null);
       setBalanceError(false);
+      setBalanceSettlement(null);
+      setSettlementBalanceError(false);
       return;
     }
 
@@ -57,6 +85,7 @@ export function WalletAuth({
       chain: monadTestnet,
       transport: http(rpc),
     });
+    const chainConfig = getNomaChainConfig();
 
     void client
       .getBalance({ address: auth.address })
@@ -70,10 +99,34 @@ export function WalletAuth({
         if (!cancelled) setBalanceError(true);
       });
 
+    if (chainConfig) {
+      void client
+        .readContract({
+          address: chainConfig.settlementToken,
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          args: [auth.address],
+        })
+        .then((raw) => {
+          if (!cancelled) {
+            setBalanceSettlement(
+              formatUnits(raw, chainConfig.tokenDecimals),
+            );
+            setSettlementBalanceError(false);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setSettlementBalanceError(true);
+        });
+    } else {
+      setBalanceSettlement(null);
+      setSettlementBalanceError(false);
+    }
+
     return () => {
       cancelled = true;
     };
-  }, [auth]);
+  }, [auth, balanceRefreshKey]);
 
   const buttonClass = isHero
     ? "rounded-md border border-border bg-surface px-5 py-2.5 text-sm font-medium text-text hover:bg-bg disabled:opacity-50"
@@ -103,6 +156,7 @@ export function WalletAuth({
       }
       const hash = await requestTestnetAusd(client, auth.address);
       setAusdStatus(`${MONAD_EXPLORER_TX}${hash}`);
+      setBalanceRefreshKey((k) => k + 1);
     } catch (err) {
       setAusdStatus(
         err instanceof Error ? err.message : "Could not request test AUSD.",
@@ -140,11 +194,25 @@ export function WalletAuth({
   ) : null;
 
   if (auth.status === "signed_in" && !isHero) {
+    const chainConfig = getNomaChainConfig();
+    const settlementSymbol = chainConfig
+      ? settlementTokenSymbol(chainConfig.settlementToken)
+      : null;
+
     const balanceLabel = balanceError
       ? "Unavailable"
       : balanceMon === null
         ? "Loading…"
         : `${balanceMon} MON`;
+
+    const settlementBalanceLabel =
+      !chainConfig || !settlementSymbol
+        ? null
+        : settlementBalanceError
+          ? `${settlementSymbol} unavailable`
+          : balanceSettlement === null
+            ? `Loading ${settlementSymbol}…`
+            : `${formatSettlementBalance(balanceSettlement)} ${settlementSymbol}`;
 
     const monNumeric =
       balanceMon != null ? Number.parseFloat(balanceMon) : null;
@@ -191,6 +259,14 @@ export function WalletAuth({
             </div>
             <span className="text-xs text-text-muted">
               <span className="font-medium text-text">{balanceLabel}</span>
+              {settlementBalanceLabel ? (
+                <>
+                  <span aria-hidden="true"> · </span>
+                  <span className="font-medium text-text">
+                    {settlementBalanceLabel}
+                  </span>
+                </>
+              ) : null}
             </span>
             <button
               type="button"
@@ -259,6 +335,11 @@ export function WalletAuth({
               </dt>
               <dd className="text-sm font-medium text-text sm:mt-1">
                 {balanceLabel}
+                {settlementBalanceLabel ? (
+                  <span className="mt-0.5 block text-text-muted sm:mt-1">
+                    {settlementBalanceLabel}
+                  </span>
+                ) : null}
               </dd>
             </div>
           </dl>
