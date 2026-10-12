@@ -20,14 +20,6 @@ Noma is built as one product story across **three prize angles** (cohesive demo,
 | **Agora — Best Cross-Border Payments App on Monad** | Diaspora → Nigeria; **Agora AUSD** settlement on Monad testnet; live metrics; in-app testnet faucet — [docs/agora-integration.md](docs/agora-integration.md) |
 | **Monad Foundation — Mera passkeys** | Passkey sign-in; **passkey re-unlock before each on-chain action** (Confirm, Test AUSD); no MetaMask in the happy path |
 
-**Out of scope for this repo** (by design):
-
-- **Privy / Dynamic** — same embedded-wallet slot as **Mera**; we use Mera for Monad passkey docs and the Mera bounty.
-- **Aurora Intents** — optional future funding path; no Aurora code in v0.
-- **Moove, Arc, Base** — not part of the Nigeria / Monad corridor.
-
-Optional stretch bounty (**Aurora**) is documented as future work only; the submitted demo does not depend on it.
-
 ## NGN last mile
 
 Noma **orchestrates**; a **licensed partner** pays NGN.
