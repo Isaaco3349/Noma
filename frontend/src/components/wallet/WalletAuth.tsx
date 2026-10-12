@@ -1,24 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatEther, formatUnits } from "viem";
+import { formatEther } from "viem";
 import { createPublicClient, http } from "viem";
-import { AUSD_MONAD_TESTNET_ADDRESS } from "@/lib/agora/constants";
 import { requestTestnetAusd } from "@/lib/agora/ausdFaucet";
 import { monadTestnet } from "@/lib/chains/monadTestnet";
-import { erc20Abi } from "@/lib/contracts/abis";
-import { getNomaChainConfig } from "@/lib/contracts/config";
 import { MONAD_TESTNET_FAUCET_URL } from "@/lib/wallet/constants";
 import { ExportRecoveryModal } from "./ExportRecoveryModal";
 import { useWallet } from "./WalletContext";
 
 const MONAD_EXPLORER_TX = "https://testnet.monadvision.com/tx/";
-
-function settlementTokenSymbol(token: `0x${string}`): string {
-  return token.toLowerCase() === AUSD_MONAD_TESTNET_ADDRESS.toLowerCase()
-    ? "AUSD"
-    : "Demo";
-}
 
 function formatSettlementBalance(raw: string): string {
   const n = Number.parseFloat(raw);
@@ -49,6 +40,7 @@ export function WalletAuth({
     null,
   );
   const [settlementBalanceError, setSettlementBalanceError] = useState(false);
+  const [settlementSymbol, setSettlementSymbol] = useState<string | null>(null);
   const [balanceRefreshKey, setBalanceRefreshKey] = useState(0);
   const [exportOpen, setExportOpen] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
@@ -74,6 +66,7 @@ export function WalletAuth({
       setBalanceError(false);
       setBalanceSettlement(null);
       setSettlementBalanceError(false);
+      setSettlementSymbol(null);
       return;
     }
 
@@ -85,7 +78,6 @@ export function WalletAuth({
       chain: monadTestnet,
       transport: http(rpc),
     });
-    const chainConfig = getNomaChainConfig();
 
     void client
       .getBalance({ address: auth.address })
@@ -99,29 +91,37 @@ export function WalletAuth({
         if (!cancelled) setBalanceError(true);
       });
 
-    if (chainConfig) {
-      void client
-        .readContract({
-          address: chainConfig.settlementToken,
-          abi: erc20Abi,
-          functionName: "balanceOf",
-          args: [auth.address],
-        })
-        .then((raw) => {
-          if (!cancelled) {
-            setBalanceSettlement(
-              formatUnits(raw, chainConfig.tokenDecimals),
-            );
+    void fetch(
+      `/api/wallet/settlement-balance?address=${encodeURIComponent(auth.address)}`,
+    )
+      .then((r) => r.json())
+      .then(
+        (json: {
+          configured?: boolean;
+          symbol?: string;
+          balance?: string;
+          error?: string;
+        }) => {
+          if (cancelled) return;
+          if (!json.configured) {
+            setBalanceSettlement(null);
+            setSettlementSymbol(null);
             setSettlementBalanceError(false);
+            return;
           }
-        })
-        .catch(() => {
-          if (!cancelled) setSettlementBalanceError(true);
-        });
-    } else {
-      setBalanceSettlement(null);
-      setSettlementBalanceError(false);
-    }
+          if (json.error || json.balance === undefined) {
+            setSettlementBalanceError(true);
+            setSettlementSymbol(json.symbol ?? "Token");
+            return;
+          }
+          setBalanceSettlement(json.balance);
+          setSettlementSymbol(json.symbol ?? "Token");
+          setSettlementBalanceError(false);
+        },
+      )
+      .catch(() => {
+        if (!cancelled) setSettlementBalanceError(true);
+      });
 
     return () => {
       cancelled = true;
@@ -194,25 +194,19 @@ export function WalletAuth({
   ) : null;
 
   if (auth.status === "signed_in" && !isHero) {
-    const chainConfig = getNomaChainConfig();
-    const settlementSymbol = chainConfig
-      ? settlementTokenSymbol(chainConfig.settlementToken)
-      : null;
-
     const balanceLabel = balanceError
       ? "Unavailable"
       : balanceMon === null
         ? "Loading…"
         : `${balanceMon} MON`;
 
-    const settlementBalanceLabel =
-      !chainConfig || !settlementSymbol
-        ? null
-        : settlementBalanceError
-          ? `${settlementSymbol} unavailable`
-          : balanceSettlement === null
-            ? `Loading ${settlementSymbol}…`
-            : `${formatSettlementBalance(balanceSettlement)} ${settlementSymbol}`;
+    const settlementBalanceLabel = !settlementSymbol
+      ? null
+      : settlementBalanceError
+        ? `${settlementSymbol} unavailable`
+        : balanceSettlement === null
+          ? `Loading ${settlementSymbol}…`
+          : `${formatSettlementBalance(balanceSettlement)} ${settlementSymbol}`;
 
     const monNumeric =
       balanceMon != null ? Number.parseFloat(balanceMon) : null;

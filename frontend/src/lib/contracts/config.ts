@@ -45,3 +45,17 @@ export function getNomaChainConfig(): NomaChainConfig | undefined {
 export function isNomaChainConfigured(): boolean {
   return getNomaChainConfig() !== undefined;
 }
+
+/** Settlement token only — for balance display without full registry env on the client. */
+export function getSettlementTokenConfig():
+  | { settlementToken: `0x${string}`; tokenDecimals: number }
+  | undefined {
+  const settlementToken = readAddress("NEXT_PUBLIC_SETTLEMENT_TOKEN_ADDRESS");
+  if (!settlementToken) return undefined;
+  const decimalsRaw = process.env.NEXT_PUBLIC_SETTLEMENT_TOKEN_DECIMALS ?? "6";
+  const tokenDecimals = Number.parseInt(decimalsRaw, 10);
+  if (!Number.isFinite(tokenDecimals) || tokenDecimals < 0 || tokenDecimals > 18) {
+    return undefined;
+  }
+  return { settlementToken, tokenDecimals };
+}
