@@ -26,7 +26,7 @@ See [docs/contracts-day4.md](../docs/contracts-day4.md).
 
 ## Deploy (Monad testnet)
 
-Chain ID **10143** per [Monad docs](https://docs.monad.xyz/developer-essentials/testnet). Settlement token address per plan — **AUSD `TODO(verify)`** when integrating Day 6.
+Chain ID **10143** per [Monad docs](https://docs.monad.xyz/developer-essentials/testnet). Settlement token per plan — mock ERC-20 on testnet or **AUSD `TODO(verify)`** when configured.
 
 ### Lost deployer key?
 

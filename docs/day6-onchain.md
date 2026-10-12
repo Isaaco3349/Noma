@@ -1,4 +1,4 @@
-# Day 6 — chat confirm → Monad testnet
+# On-chain deploy (Monad testnet)
 
 ## Deploy (once)
 

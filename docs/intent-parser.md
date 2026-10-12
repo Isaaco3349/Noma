@@ -1,4 +1,4 @@
-# Payment intent parser (Day 3)
+# Payment intent parser
 
 Client-side rules in `frontend/src/lib/intent/parsePaymentIntent.ts` — no LLM or paid API.
 

@@ -62,7 +62,7 @@ const OUT_OF_CORRIDOR =
   /\b(kenya|nairobi|ghana|accra|uk\b|london|india|mumbai|philippines|mexico)\b/i;
 
 /**
- * Rule-based parser for diaspora → Nigeria payment intents (Day 3).
+ * Rule-based parser for diaspora → Nigeria payment intents.
  * No LLM or external API — deterministic for demo and tests.
  */
 export function parsePaymentIntent(raw: string): ParseResult {

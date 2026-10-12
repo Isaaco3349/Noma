@@ -1,4 +1,4 @@
-# Paystack NGN off-ramp (Day 7)
+# Paystack NGN off-ramp
 
 ## Integration
 

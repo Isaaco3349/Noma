@@ -1,4 +1,4 @@
-# Day 4 — on-chain schedules
+# On-chain schedules (registry + adapter)
 
 ## Contracts
 
@@ -6,7 +6,7 @@
 | --- | --- |
 | `NomaScheduleRegistry` | Stores authorized plans, enforces spend caps and schedule timing |
 | `DirectTransferAdapter` | `INomaSettlementAdapter` — ERC-20 `transferFrom` payer → payout sink |
-| `INomaSettlementAdapter` | Swap point for Agora / other settlement (Day 6+) |
+| `INomaSettlementAdapter` | Swap point for Agora / other settlement |
 
 ## Plan fields (summary)
 

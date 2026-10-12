@@ -8,84 +8,83 @@ You say or type: *“Send $100 to my mum in Lagos on the 2nd of every month.”*
 
 Remittance to Nigeria is expensive and fragmented: multiple apps, opaque FX, and Web3 friction for diaspora senders. Noma focuses on **one corridor** and one flow—**plan → confirm → execute → track**.
 
-## Hackathon strategy (how we stand out)
+## Monad Metropolis submission
 
-Judges reward a **cohesive demo**, not a logo wall. Noma intentionally targets **three integration stories** that match the product:
+Noma is built as one product story across **three prize angles** (cohesive demo, not a integration checklist):
 
-| Target | Why Noma fits |
+| Submission angle | What we ship |
 | --- | --- |
-| **Track 02 — Consumer Products & Payments** | Chat/voice consumer UX, recurring plans, confirmation-first |
-| **Agora — Best Cross-Border Payments App on Monad** | AUSD on Monad + live Agora metrics in app; `INomaSettlementAdapter`; optional `AGORA_API_KEY` — see `docs/agora-integration.md` |
-| **Monad Foundation — Mera passkeys** | Seedless passkey login; no MetaMask in the happy path |
+| **Track 02 — Consumer Products & Payments** | Chat/voice UX, payment plans, confirm/cancel, recipients, history |
+| **Agora — Best Cross-Border Payments App on Monad** | Cross-border diaspora → Nigeria; `INomaSettlementAdapter`; live Agora metrics in the app — see [docs/agora-integration.md](docs/agora-integration.md) |
+| **Monad Foundation — Mera passkeys** | Passkey sign-in and transaction signing; no MetaMask in the happy path |
 
-**Explicitly not stacking** (same slot or out of scope):
+**Out of scope for this repo** (by design):
 
-- **Privy / Dynamic** — same “embedded wallet” slot as **Mera**; we chose Mera for the Monad passkey bounty and docs alignment.
-- **Aurora Intents** — strong optional bounty ($5k “any-chain liquidity → Monad”); **not in the v0 demo**. Architecture leaves room to fund from other chains later; no Aurora code in this repo until requirements are confirmed with the team.
-- **Moove, Arc, Base** — out of scope per project rules.
+- **Privy / Dynamic** — same embedded-wallet slot as **Mera**; we use Mera for Monad passkey docs and the Mera bounty.
+- **Aurora Intents** — optional future funding path; no Aurora code in v0.
+- **Moove, Arc, Base** — not part of the Nigeria / Monad corridor.
 
-**Realistic prize focus:** Track 02 + Agora + Mera (~$22.5k stack before grand champion). Aurora remains a **stretch** if time allows after Day 7.
+Optional stretch bounty (**Aurora**) is documented as future work only; the submitted demo does not depend on it.
 
-## NGN last mile (Day 7 direction)
+## NGN last mile
 
-Noma **orchestrates**; a **licensed partner** pays NGN. Planned integration:
+Noma **orchestrates**; a **licensed partner** pays NGN.
 
 | Role | Choice | Status |
 | --- | --- | --- |
-| **NGN payout (banks / mobile money in Nigeria)** | **[Paystack](https://paystack.com/)** | Primary for API + Nigeria credibility; **stub/mock in demo** until keys and compliance review |
-| **Alternates considered** | Flutterwave | Same class of partner; one rail in v0 to avoid scope creep |
-| **Sender-side fiat ↔ crypto (sponsor perk)** | Mercuryo | Evaluate only if Nigeria coverage fits **funding** the sender; **not** the primary “pay mum in Lagos” rail until verified (`TODO(verify)`) |
+| **NGN payout (banks in Nigeria)** | **[Paystack](https://paystack.com/)** | Test API for banks/recipients; transfers via Transfer API with **`auto`** mode (demo NGN when sandbox balance is insufficient) |
+| **Alternates considered** | Flutterwave | Same class of partner; not wired in v0 |
+| **Sender-side fiat ↔ crypto** | Mercuryo | Evaluate for sender funding only; `TODO(verify)` Nigeria fit |
 
-UI and docs must stay honest: **orchestration layer, not a money transmitter**.
+UI copy stays honest: **orchestration layer, not a money transmitter**.
 
 ## Architecture
 
 | Layer | Implementation |
 | --- | --- |
-| **UX** | Chat + voice → confirm → spoken replies (optional read-aloud) |
-| **Intent** | Rule-based parser (no LLM); Nigeria corridor only |
-| **Wallet** | Mera passkey → EOA on Monad testnet |
+| **UX** | Chat + voice → plan card → inline or saved recipient → confirm → optional read-aloud |
+| **Intent** | Rule-based parser (no LLM); Nigeria places and names; unit tests |
+| **Wallet** | [Mera](https://mera.category.xyz/) passkey → EOA on Monad testnet |
 | **Execution** | `NomaScheduleRegistry` — limits, schedules, executor auth |
-| **Settlement** | `DirectTransferAdapter` today; `INomaSettlementAdapter` for Agora/AUSD (`TODO(verify)` mainnet/testnet AUSD address) |
-| **NGN delivery** | Paystack Transfer API via Next.js routes (`/api/paystack/*`, `/api/offramp/*`) |
+| **Settlement** | `DirectTransferAdapter` + `INomaSettlementAdapter` (Agora AUSD path — `TODO(verify)` token address) |
+| **NGN delivery** | Paystack via Next.js routes (`/api/paystack/*`, `/api/offramp/*`) |
 
-## Build status vs Metropolis 7-day schedule
+End-to-end reference: [docs/architecture.md](docs/architecture.md).
 
-This matches the **deadline-oriented plan** (confirm final date on your Metropolis profile, e.g. Oct 14).
+## What is implemented
 
-| Day | Metropolis deliverable | Noma status |
-| --- | --- | --- |
-| **1** | Repo, rules, palette, chat shell, Monad testnet | **Done** |
-| **2** | Passkey / embedded wallet | **Done** (Mera) |
-| **3** | Scheduling + spend-limit contract, Foundry tests, testnet deploy | **Done** (contracts + your deploy) |
-| **4** | Text intent → payment plan + confirmation | **Done** |
-| **5** | Voice → same parser | **Done** |
-| **6** | AUSD settlement adapter (direct first, Agora behind interface) | **Done** (direct + interface; mock token on testnet; Agora impl pending) |
-| **7** | Transaction tracking, recipient management, demo flow | **Done** (Paystack API + recipients + history; live mode with `PAYSTACK_SECRET_KEY`) |
-
-Execution order in repo differed slightly (parser before contracts), but **deliverables align** with the schedule above.
-
-## Honest scope (what is real today)
-
-| Real on testnet | Mocked / planned |
+| Area | Includes |
 | --- | --- |
-| Mera passkey sign-in, MON balance | Verified **AUSD** address (`TODO(verify)`) |
-| `createPlan` + `executePlan` after **Confirm** (when `.env.local` set) | Full Agora mint/redeem routes (authenticated API) |
-| Mock ERC-20 or **AUSD** as settlement token; Agora `/v0/metrics` in UI | Paystack funded sandbox transfers (auto falls back to demo NGN) |
-| Rule-based parser + voice + TTS | Aurora cross-chain funding |
-| Payout sink = deployer wallet (demo) | Licensed remittance claims |
+| **Frontend** | Landing + full-width app shell, chat, plan cards, inline recipient setup on pending plans |
+| **Wallet** | Mera sign-up/sign-in, copy address, test MON faucet link, optional recovery phrase export |
+| **On-chain** | Deployed registry + adapter on Monad testnet; confirm → approve, create, execute |
+| **Paystack** | Banks, recipient resolve/save, NGN quote on plan, disburse orchestration |
+| **Voice** | Mic STT + TTS (Chrome/Edge desktop; see [docs/voice.md](docs/voice-day5.md)) |
+| **Agora** | Public metrics + `/api/agora/status`; optional `AGORA_API_KEY` |
+| **Contracts** | Foundry tests for registry/adapter |
 
-**Try in UI:** `Send $10 to my mum in Lagos just once` → sign in → **Confirm** (passkey needs **mock token + MON** on the passkey address).
+## Honest scope (demo vs production)
+
+| Works on testnet today | Labeled demo / planned |
+| --- | --- |
+| Mera passkey, MON balance, on-chain confirm when env + token funded | Production **AUSD** address (`TODO(verify)`) |
+| Mock ERC-20 settlement (or AUSD if configured and wallet holds balance) | Full Agora authenticated mint/redeem |
+| Paystack live test API; **auto** demo NGN when sandbox unfunded | Aurora cross-chain funding |
+| Rule-based parser, recipients, history, MonadVision tx links | Licensed remittance operator claims |
+
+**Try in UI:** `Send $10 to my mum in Lagos just once` → sign in → add bank on plan or use saved recipient → **Confirm** (passkey needs **MON + settlement token** on the passkey address).
 
 ## Tech stack
 
-- **Frontend**: Next.js (App Router), TypeScript, Tailwind, viem (+ wagmi chain config)
+- **Frontend**: Next.js (App Router), TypeScript, Tailwind, viem
 - **Contracts**: Solidity + Foundry (`/contracts`)
-- **Backend**: thin Next.js routes (Day 7 off-ramp stub)
+- **Backend**: Next.js route handlers (Paystack, off-ramp, Agora, chain config)
 
-## Finalize for submission (lost deployer key OK)
+## Deploy and env
 
-See **[docs/finalize-hackathon.md](docs/finalize-hackathon.md)** — new testnet wallet → deploy → mint to Mera passkey → Paystack test + Agora metrics ($0 demo path) → Vercel.
+See **[docs/finalize-hackathon.md](docs/finalize-hackathon.md)** — testnet deploy → mint to Mera passkey → Paystack test key → Vercel.
+
+On-chain env vars: [docs/onchain-deploy.md](docs/day6-onchain.md). Validate local placeholders: `cd frontend && npm run verify-env`.
 
 ## Setup
 
@@ -108,29 +107,27 @@ cd contracts
 & "$env:USERPROFILE\.foundry\bin\forge.exe" test
 ```
 
-Deploy and env vars: [docs/day6-onchain.md](docs/day6-onchain.md).
+## Demo video (60s)
 
-## Day 7 demo script (target)
+Full script: **[docs/demo-script.md](docs/demo-script.md)**.
 
-1. **Problem** — diaspora sender, one sentence pain.
-2. **Voice** — mic: *“Send $10 to my mum in Lagos just once.”*
-3. **Plan card** — confirm; show **MonadVision** create/settlement links.
-4. **Tracking** — plan id + status in UI (Day 7).
-5. **NGN** — “Paystack transfer queued” stub + compliance one-liner.
-6. **Architecture** — one slide: Mera → Monad registry → adapter → Paystack (planned).
-
-Run this end-to-end yourself and log bugs in [PROGRESS.md](./PROGRESS.md). Full script: [docs/demo-script.md](docs/demo-script.md).
+1. **Hook** — diaspora → Nigeria without chain jargon.
+2. **Wallet** — Mera passkey; copy address; fund MON + settlement token on testnet.
+3. **Chat** — voice or text (e.g. any name + Nigerian city); plan card with NGN estimate.
+4. **Recipient** — bank details on the plan card or pick a saved beneficiary; **Confirm**; MonadVision links.
+5. **History** — `/app/history`; navbar **Agora** metrics.
+6. **One line** — Mera → Monad registry/adapter → Paystack NGN orchestration.
 
 ### Paystack (server)
 
-Add to `frontend/.env.local` (never commit):
+Add to `frontend/.env.local` or Vercel (never commit):
 
 ```env
 PAYSTACK_SECRET_KEY=sk_test_...
 NOMA_DEMO_USD_NGN_RATE=1550
 ```
 
-Restart `npm run dev`. Without the secret key, banks/recipients/disburse use **demo** mode (labeled in UI).
+Without the secret key, Paystack routes run in **demo** mode (labeled in UI).
 
 ## Auth (passkey wallet)
 
@@ -142,17 +139,23 @@ Noma uses **[Mera](https://mera.category.xyz/)** per the [Monad passkey guide](h
 - **Test MON**: [faucet.monad.xyz](https://faucet.monad.xyz).
 - **Desktop Chrome**: PRF via Google Password Manager — [authenticator support](https://mera.category.xyz/authenticator-support).
 
+Passkeys are **per domain** — production (Vercel) and localhost use different credentials.
+
 ## Compliance
 
-Noma is an **orchestration and UX layer**. Fiat payout in Nigeria is intended via **licensed** partners (Paystack in plan). Not a money transmitter; demo copy is not legal advice. Policies: `/legal/terms`, `/legal/privacy`.
+Noma is an **orchestration and UX layer**. Fiat payout in Nigeria is intended via **licensed** partners (Paystack). Not a money transmitter; demo copy is not legal advice. Policies: `/legal/terms`, `/legal/privacy`.
 
 ## Docs
 
-- [PROGRESS.md](./PROGRESS.md) — log and decisions  
-- [docs/day6-onchain.md](docs/day6-onchain.md) — deploy + env  
-- [docs/voice-day5.md](docs/voice-day5.md) — voice/TTS  
-- [docs/intent-parser.md](docs/intent-parser.md) — example phrases  
-- [docs/contracts-day4.md](docs/contracts-day4.md) — registry/adapter  
+| Doc | Topic |
+| --- | --- |
+| [PROGRESS.md](./PROGRESS.md) | Decisions and open questions |
+| [docs/onchain-deploy.md](docs/day6-onchain.md) | Deploy + env |
+| [docs/voice.md](docs/voice-day5.md) | Mic + TTS |
+| [docs/intent-parser.md](docs/intent-parser.md) | Example phrases |
+| [docs/contracts-registry.md](docs/contracts-day4.md) | Registry + adapter |
+| [docs/agora-integration.md](docs/agora-integration.md) | Agora + AUSD |
+| [docs/finalize-hackathon.md](docs/finalize-hackathon.md) | Submission checklist |
 
 ## Monad testnet
 

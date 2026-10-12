@@ -2,7 +2,7 @@ import { createConfig, http } from "wagmi";
 import { monadTestnet } from "@/lib/chains/monadTestnet";
 
 /**
- * Wagmi config for Monad testnet only. Wallet connection UI is not wired on Day 1.
+ * Wagmi config for Monad testnet only. User wallet is Mera passkey, not wagmi connect.
  */
 export const wagmiConfig = createConfig({
   chains: [monadTestnet],

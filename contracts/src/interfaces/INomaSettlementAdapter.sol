@@ -4,7 +4,7 @@ pragma solidity ^0.8.28;
 /**
  * @title INomaSettlementAdapter
  * @notice Pulls settlement token from the payer for Nigeria-corridor orchestration.
- * @dev Day 4: direct ERC-20 adapter. Agora Stablecoin API adapter may implement this later.
+ * @dev Direct ERC-20 adapter today. Agora Stablecoin API adapter may implement this later.
  */
 interface INomaSettlementAdapter {
     function executeSettlement(

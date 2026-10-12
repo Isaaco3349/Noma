@@ -1,11 +1,11 @@
-# Noma 60s demo script (Day 7)
+# Noma 60s demo script
 
 1. **Hook** — “Diaspora senders shouldn’t fight chains and forms to pay family in Nigeria.”
-2. **Recipients** — `/app/recipients`: show **Mum · Lagos** with Paystack bank details saved.
-3. **Voice** — `/app`: mic → *“Send $10 to my mum in Lagos just once.”*
-4. **Plan** — NGN estimate (Paystack), Confirm (passkey + Monad txs if configured).
-5. **History** — `/app/history`: Monad plan id + Paystack ref (live or demo mode).
-6. **Architecture** — Mera → Monad registry → adapter → Paystack NGN (orchestration only).
+2. **Wallet** — Mera passkey on `/app`; copy address; testnet MON + settlement token funded.
+3. **Chat** — Voice (desktop Chrome) or type: e.g. *“Send $10 to my mum in Lagos just once”* or any name + Nigerian city.
+4. **Plan** — NGN estimate; add bank on the plan card or pick a saved beneficiary → **Confirm** (passkey + Monad txs).
+5. **History** — `/app/history`: plan id + Paystack ref (live or demo mode).
+6. **Agora** — Navbar metrics; one line: Mera → Monad registry/adapter → Paystack NGN (orchestration only).
 
 ## Paystack live sandbox
 

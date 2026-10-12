@@ -1,4 +1,4 @@
-# Voice (Day 5)
+# Voice input and text-to-speech
 
 ## Flow
 
@@ -22,4 +22,4 @@ Typed **Send** does not trigger speech (only voice-triggered sends).
 - `frontend/src/components/chat/ChatInput.tsx` (mic)
 - `frontend/src/components/chat/ChatShell.tsx` (TTS after `viaVoice` send)
 
-No cloud STT/TTS API keys in Day 5.
+No cloud STT/TTS API keys — browser Web Speech API only.
