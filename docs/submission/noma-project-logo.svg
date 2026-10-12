@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="Noma">
+  <rect width="1024" height="1024" fill="#bdb5a4"/>
+  <circle cx="512" cy="420" r="268" fill="#262c34"/>
+  <circle cx="512" cy="420" r="268" fill="none" stroke="#857c6e" stroke-width="4"/>
+  <text
+    x="512"
+    y="500"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', Times, serif"
+    font-size="300"
+    font-weight="600"
+    fill="#ddd6c8"
+  >N</text>
+  <text
+    x="512"
+    y="780"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', Times, serif"
+    font-size="88"
+    font-weight="600"
+    letter-spacing="2"
+    fill="#262c34"
+  >Noma</text>
+  <text
+    x="512"
+    y="860"
+    text-anchor="middle"
+    font-family="system-ui, Segoe UI, sans-serif"
+    font-size="28"
+    fill="#3d3830"
+  >Nigeria corridor payments</text>
+</svg>

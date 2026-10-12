@@ -1,22 +1,64 @@
-# Noma 60s demo script
+# Noma demo scripts (Metropolis)
 
-1. **Hook** — “Diaspora senders shouldn’t fight chains and forms to pay family in Nigeria.”
-2. **Wallet** — Mera passkey on `/app`; copy address; testnet MON + settlement token funded.
-3. **Chat** — Voice (desktop Chrome) or type: e.g. *“Send $10 to family in Lagos just once”* or any name and Nigerian city.
-4. **Plan** — NGN estimate; add bank on the plan card or pick a saved beneficiary → **Confirm** (passkey + Monad txs).
-5. **History** — `/app/history`: plan id + Paystack ref (live or demo mode).
-6. **Agora** — Navbar metrics; one line: Mera → Monad registry/adapter → Paystack NGN (orchestration only).
+**Live app:** https://noma-pink.vercel.app/app  
+**Full paste copy:** [submission/metropolis.md](./submission/metropolis.md)
 
-## Paystack live sandbox
+Record **technical demo first**, then **pitch**, then any extra clips the portal requires.
 
-1. Add `PAYSTACK_SECRET_KEY=sk_test_...` to `frontend/.env.local` (server-only).
-2. Recipients/banks use the real test API; NGN **transfers** default to `NOMA_PAYSTACK_TRANSFER_MODE=auto` (demo disburse if sandbox balance is insufficient — common on test accounts).
-3. Restart `npm run dev`.
+---
 
-Without the key, everything Paystack runs in **demo** mode (safe for judges, labeled in UI).
+## Technical demo (≤3 min)
 
-## Agora (bounty narrative)
+### Spoken walkthrough (say this as you click)
 
-1. Navbar shows **Agora AUSD on Monad** + live metrics from `/api/agora/status`.
-2. Optional: set `AGORA_API_KEY` for “API connected” (free dashboard key).
-3. For on-chain AUSD: see `docs/agora-integration.md` and `.env.example`.
+**Open (10 s)**  
+“I’m on Noma’s live Monad testnet build—diaspora senders paying family in Nigeria without fighting MetaMask or seed phrases.”
+
+**Passkey = embedded wallet (30–45 s)**  
+- **New user:** “I’ll **Create account with passkey**. That registers a **Mera** wallet on Monad—face, fingerprint, or device PIN. No external wallet extension; the address you see in the header **is** the on-chain account.”  
+- **Returning user (optional take):** “If you’ve used this site before on this domain, **Sign in** with the same passkey—same embedded wallet, no password.”  
+- After login: “Here’s my **Monad testnet address**, **MON** for gas, and **AUSD** for settlement. I can copy the address or use **Get test MON / Get test AUSD** if I need test funds.”  
+- Point at strip: “Settlement is **Agora AUSD on Monad**—that’s the stablecoin rail; the metrics line is live Agora data.”
+
+**Intent → plan (45 s)**  
+“I describe the payment in plain language—voice or type.”  
+Example: *“Send $100 to Ada in Abuja on the 1st of every month.”*  
+“Noma parses that into a **payment plan**: amount, who, where in Nigeria, schedule, and an **NGN estimate** via Paystack.”
+
+**Recipient / trust (30 s)**  
+“Before anything runs, I **verify the Nigerian bank account** on the plan card—saved beneficiary or enter bank details here. Confirm stays off until payout details are set. That’s deliberate: family shouldn’t get the wrong account.”
+
+**Confirm (45 s)**  
+“**Confirm payout and plan** asks for my passkey again—that signs **AUSD approval and settlement** on Monad, plus our schedule registry.”  
+After success: “**Monad plan** id, link to **AUSD settlement on Monad**, and **NGN payout** (test demo if Paystack sandbox is unfunded—we orchestrate; production funds Paystack balance).”
+
+**Close (15 s)**  
+“**History** keeps the trail. Same flow end to end: passkey wallet → AUSD on Monad → Paystack NGN story—one corridor, Nigeria only.”
+
+### Shot list (if you edit tight)
+
+1. Hook → passkey create **or** sign-in → wallet bar (MON + AUSD) + Agora strip  
+2. Chat prompt → plan card → bank/recipient  
+3. Confirm + passkey prompt → confirmed card + explorer links  
+4. History tab  
+
+**Recording tip:** Use a **fresh passkey** on camera for “new user,” or sign in if you already funded MON/AUSD on noma-pink—say which you’re doing so judges aren’t confused.
+
+## Pitch (≤2 min)
+
+Problem → Noma (voice/text, verify bank, passkey) → Monad + Agora AUSD + Mera + Paystack → https://noma-pink.vercel.app/app → what’s next.
+
+---
+
+## Paystack (server)
+
+`PAYSTACK_SECRET_KEY=sk_test_...` in Vercel (never commit). Default **`auto`** mode: demo NGN when sandbox balance is insufficient.
+
+## Agora / AUSD
+
+- Production demo: **Agora AUSD** on Monad testnet (see [agora-integration.md](./agora-integration.md)).
+- Fund passkey: **MON** (Monad faucet) + **AUSD** (in-app **Get test AUSD** or one-time faucet; cooldown on repeat).
+
+## Mera
+
+Passkey re-unlock before **Confirm** and **Get test AUSD**. Passkeys are **per domain** (localhost ≠ Vercel).

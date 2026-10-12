@@ -4,12 +4,14 @@ Use this when you **lost the old deployer key** or env addresses were empty. Tot
 
 ## What judges should see (60s)
 
-1. **Mera** — passkey sign-in  
-2. **Recipients** — Paystack test API saved **Mum · Lagos**  
-3. **Chat/voice** — plan → **Confirm**  
-4. **Monad** — plan id + explorer tx (needs env + mock token on passkey)  
-5. **NGN** — Paystack **demo orchestration** (auto mode if sandbox unfunded)  
-6. **Agora** — navbar metrics + settlement story (`docs/agora-integration.md`)
+1. **Mera** — passkey sign-in; **MON + AUSD** in wallet bar  
+2. **Recipients** — Paystack test API saved beneficiary (e.g. Ada · Abuja)  
+3. **Chat/voice** — plan → **Confirm** (passkey re-unlock)  
+4. **Monad** — plan id + **AUSD settlement** explorer link (`docs/agora-integration.md`)  
+5. **NGN** — Paystack live test or **demo orchestration** (auto mode if sandbox unfunded)  
+6. **Agora** — **Agora AUSD on Monad** strip + live metrics  
+
+Paste-ready Metropolis fields: **`docs/submission/metropolis.md`**
 
 ---
 
@@ -54,12 +56,14 @@ PAYSTACK_SECRET_KEY=sk_test_...
 
 Then set `$env:SETTLEMENT_TOKEN_ADDRESS` to the **same token** as above and re-run the script to **mint** (or run forge mint script manually — see `contracts/script/MintMockToken.s.sol`).
 
-**Passkey wallet needs:**
+**Passkey wallet needs (production demo on Vercel):**
 
 | Asset | How |
 | --- | --- |
-| **MON** | Faucet → **passkey address** (for Confirm gas) |
-| **Mock ERC-20** | Mint script → **passkey address** |
+| **MON** | [Monad faucet](https://faucet.monad.xyz) → **passkey address** (gas) |
+| **AUSD** | In-app **Get test AUSD** or Agora faucet `requestFunds(passkey)` — see [agora-integration.md](./agora-integration.md) |
+
+**Fallback (local only):** mock ERC-20 from deploy + mint script if you are not using Agora AUSD env.
 
 ---
 
@@ -77,26 +81,22 @@ Then set `$env:SETTLEMENT_TOKEN_ADDRESS` to the **same token** as above and re-r
 
 ---
 
-## Phase 4 — Agora ($0 for demo)
+## Phase 4 — Agora AUSD (production demo)
 
 | Item | Cost |
 | --- | --- |
 | `/v0/metrics` in app | **Free**, no key |
 | `AGORA_API_KEY` | **Free** to create; optional “API connected” badge |
-| **AUSD in wallet** | **No public faucet** like MON |
+| **AUSD on passkey** | Agora Monad testnet faucet + in-app **Get test AUSD** |
 
-**Recommended for submission:**
-
-- Keep **mock token** for working on-chain Confirm.  
-- Navbar + README: **Agora AUSD** is production settlement (`docs/agora-integration.md`).  
-- Optional env for **label only** (only if you later hold AUSD):
+**Vercel (live demo):**
 
 ```env
 NEXT_PUBLIC_SETTLEMENT_TOKEN_ADDRESS=0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC
 NEXT_PUBLIC_SETTLEMENT_TOKEN_DECIMALS=6
 ```
 
-Do **not** switch to AUSD until the passkey holds AUSD or Confirm will fail.
+Passkey must hold **AUSD + MON** before Confirm. Faucet cooldown blocks rapid repeat drips—one successful drip (~10k AUSD) is enough for the hackathon.
 
 ---
 
@@ -133,9 +133,9 @@ npm run build
 
 ```
 You (Mera passkey)
-  → Confirm: mock/AUSD settlement on Monad (registry + adapter)
+  → Confirm: Agora AUSD settlement on Monad (registry + adapter)
   → Server: Paystack NGN orchestration (demo or live)
 Recipient bank: saved once in Recipients (Paystack RCP_…)
 ```
 
-**MON** = gas. **Mock/AUSD** = settlement amount. **Paystack** = NGN leg (not MON conversion in-app).
+**MON** = gas. **AUSD** = settlement amount. **Paystack** = NGN leg (not on-chain naira).

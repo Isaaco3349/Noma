@@ -163,6 +163,7 @@ Noma is an **orchestration and UX layer**. Fiat payout in Nigeria is intended vi
 | [docs/intent-parser.md](docs/intent-parser.md) | Example phrases |
 | [docs/contracts-registry.md](docs/contracts-day4.md) | Registry + adapter |
 | [docs/agora-integration.md](docs/agora-integration.md) | Agora + AUSD faucet |
+| [docs/submission/metropolis.md](docs/submission/metropolis.md) | Metropolis paste-ready copy (AUSD live) |
 | [docs/finalize-hackathon.md](docs/finalize-hackathon.md) | Submission checklist |
 
 ## Monad testnet
