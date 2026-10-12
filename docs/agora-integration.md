@@ -22,6 +22,17 @@ AGORA_API_KEY=your_access_key
 
 Noma calls `POST /v0/auth/token` and shows **Agora API connected** in `/api/agora/status` when the key is valid.
 
+## Testnet AUSD faucet (Monad)
+
+Agora lists a faucet for **Monad testnet** ([contract deployments](https://docs.agora.finance/developer/contract-deployments)):
+
+| | Address |
+| --- | --- |
+| AUSD token | `0xa9012a055bd4e0eDfF8Ce09f960291C09D5322dC` |
+| Faucet | `0xd236c18D274E54FAccC3dd9DDA4b27965a73ee6C` |
+
+Call `requestFunds(yourAddress)` on the faucet with **MON** for gas. In Noma, signed-in users can use **Get test AUSD** in the wallet bar (passkey signs the tx). See [getting testnet tokens](https://docs.agora.finance/instant-settlement/guides/getting-testnet-tokens).
+
 ## AUSD on Monad testnet
 
 TODO(verify) before mainnet:

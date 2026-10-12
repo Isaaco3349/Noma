@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { formatEther } from "viem";
 import { createPublicClient, http } from "viem";
 import { monadTestnet } from "@/lib/chains/monadTestnet";
+import { requestTestnetAusd } from "@/lib/agora/ausdFaucet";
 import { MONAD_TESTNET_FAUCET_URL } from "@/lib/wallet/constants";
 import { ExportRecoveryModal } from "./ExportRecoveryModal";
 import { useWallet } from "./WalletContext";
+
+const MONAD_EXPLORER_TX = "https://testnet.monadvision.com/tx/";
 
 type WalletAuthProps = {
   variant?: "appBar" | "hero";
@@ -17,12 +20,14 @@ export function WalletAuth({
   variant = "appBar",
   onSignedIn,
 }: WalletAuthProps) {
-  const { auth, busy, error, clearError, signUp, signIn, signOut } =
+  const { auth, busy, error, clearError, signUp, signIn, signOut, withWalletClient } =
     useWallet();
   const [balanceMon, setBalanceMon] = useState<string | null>(null);
   const [balanceError, setBalanceError] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
+  const [ausdBusy, setAusdBusy] = useState(false);
+  const [ausdStatus, setAusdStatus] = useState<string | null>(null);
 
   const isHero = variant === "hero";
 
@@ -84,6 +89,27 @@ export function WalletAuth({
   async function handleSignUp() {
     const ok = await signUp();
     if (ok) onSignedIn?.();
+  }
+
+  async function handleRequestAusd() {
+    if (auth.status !== "signed_in") return;
+    setAusdBusy(true);
+    setAusdStatus(null);
+    try {
+      const client = await withWalletClient();
+      if (!client) {
+        setAusdStatus("Sign in with your passkey, then try again.");
+        return;
+      }
+      const hash = await requestTestnetAusd(client, auth.address);
+      setAusdStatus(`${MONAD_EXPLORER_TX}${hash}`);
+    } catch (err) {
+      setAusdStatus(
+        err instanceof Error ? err.message : "Could not request test AUSD.",
+      );
+    } finally {
+      setAusdBusy(false);
+    }
   }
 
   const errorBlock = error ? (
@@ -152,8 +178,16 @@ export function WalletAuth({
                 rel="noopener noreferrer"
                 className={`${buttonClass} inline-flex border-accent bg-accent/20`}
               >
-                Faucet
+                MON
               </a>
+              <button
+                type="button"
+                className={`${buttonClass} border-accent bg-accent/20`}
+                disabled={ausdBusy || busy}
+                onClick={() => void handleRequestAusd()}
+              >
+                {ausdBusy ? "Requesting…" : "Test AUSD"}
+              </button>
             </div>
             <span className="text-xs text-text-muted">
               <span className="font-medium text-text">{balanceLabel}</span>
@@ -201,6 +235,14 @@ export function WalletAuth({
                   >
                     Get test MON
                   </a>
+                  <button
+                    type="button"
+                    className={`${buttonClass} border-accent bg-accent/20`}
+                    disabled={ausdBusy || busy}
+                    onClick={() => void handleRequestAusd()}
+                  >
+                    {ausdBusy ? "Requesting…" : "Get test AUSD"}
+                  </button>
                 </div>
                 {needsMon ? (
                   <p className="text-[11px] leading-relaxed text-text-muted sm:text-xs">
@@ -239,6 +281,22 @@ export function WalletAuth({
               Sign out
             </button>
           </div>
+          {ausdStatus ? (
+            <p className="mt-2 text-[11px] sm:text-xs">
+              {ausdStatus.startsWith("http") ? (
+                <a
+                  href={ausdStatus}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-all text-text underline underline-offset-2"
+                >
+                  Test AUSD requested. View transaction
+                </a>
+              ) : (
+                <span className="text-semantic-error">{ausdStatus}</span>
+              )}
+            </p>
+          ) : null}
         </div>
         <ExportRecoveryModal
           open={exportOpen}
