@@ -88,7 +88,7 @@ export function PaymentPlanCard({
             {formatAmountLabel(plan.amountUsd)}
           </dd>
         </div>
-        {ngnEstimate ? (
+        {ngnEstimate && !(isConfirmed && offramp?.ngnAmount) ? (
           <div className="flex justify-between gap-4">
             <dt className="text-text-muted">Est. NGN (Paystack)</dt>
             <dd className="text-right font-medium text-text">
@@ -115,7 +115,7 @@ export function PaymentPlanCard({
           </dd>
         </div>
       </dl>
-      {ngnEstimate ? (
+      {ngnEstimate && !isConfirmed ? (
         <p className="mt-2 text-[11px] leading-relaxed text-text-muted">
           {ngnEstimate.disclaimer}
         </p>
@@ -177,19 +177,19 @@ export function PaymentPlanCard({
               : "text-semantic-success"
           }`}
         >
-          NGN (Paystack {offramp.mode}
-          {offramp.fallbackFromLive ? ", sandbox unfunded, demo mode" : ""}):{" "}
           {offramp.status === "failed"
             ? offramp.error
             : offramp.ngnAmount
-              ? `₦${offramp.ngnAmount.toLocaleString()}, ${offramp.status}`
-              : offramp.status}
-          {offramp.paystackReference
-            ? ` (ref ${offramp.paystackReference})`
-            : null}
-          {offramp.message && offramp.status !== "failed" ? (
-            <span className="mt-1 block text-[11px] font-normal text-text-muted">
-              {offramp.message}
+              ? offramp.mode === "live" && !offramp.fallbackFromLive
+                ? `NGN via Paystack: ₦${offramp.ngnAmount.toLocaleString()}`
+                : `NGN payout (test demo): ₦${offramp.ngnAmount.toLocaleString()}`
+              : "NGN payout pending"}
+          {offramp.mode === "live" &&
+          offramp.paystackReference &&
+          !offramp.fallbackFromLive ? (
+            <span className="text-text-muted">
+              {" "}
+              (ref {offramp.paystackReference})
             </span>
           ) : null}
         </p>
@@ -202,18 +202,18 @@ export function PaymentPlanCard({
             target="_blank"
             rel="noopener noreferrer"
           >
-            View create tx
+            Create plan on Monad
           </a>
           {chain.executeTxHash ? (
             <>
-              {" and "}
+              {" · "}
               <a
                 className="text-text underline underline-offset-2"
                 href={`${EXPLORER}${chain.executeTxHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                View settlement tx
+                AUSD settlement on Monad
               </a>
             </>
           ) : null}

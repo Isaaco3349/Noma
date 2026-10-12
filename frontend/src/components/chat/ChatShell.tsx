@@ -179,9 +179,9 @@ export function ChatShell() {
               target.plan,
               chainConfig,
             );
-            chainHint = `On-chain plan #${result.planId.toString()} on Monad testnet.${
-              result.executeTxHash ? " Settlement tx submitted." : ""
-            }`;
+            chainHint = `Monad plan #${result.planId.toString()} registered${
+              result.executeTxHash ? "; Agora AUSD settlement submitted" : ""
+            }.`;
             chain = {
               pending: false,
               planId: result.planId.toString(),
