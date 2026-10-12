@@ -6,6 +6,10 @@ import { createPublicClient, http } from "viem";
 import { requestTestnetAusd } from "@/lib/agora/ausdFaucet";
 import { monadTestnet } from "@/lib/chains/monadTestnet";
 import { MONAD_TESTNET_FAUCET_URL } from "@/lib/wallet/constants";
+import {
+  fetchSettlementBalance,
+  friendlyAusdFaucetError,
+} from "@/lib/wallet/fetchSettlementBalance";
 import { ExportRecoveryModal } from "./ExportRecoveryModal";
 import { useWallet } from "./WalletContext";
 
@@ -91,34 +95,21 @@ export function WalletAuth({
         if (!cancelled) setBalanceError(true);
       });
 
-    void fetch(
-      `/api/wallet/settlement-balance?address=${encodeURIComponent(auth.address)}`,
-    )
-      .then((r) => r.json())
-      .then(
-        (json: {
-          configured?: boolean;
-          symbol?: string;
-          balance?: string;
-          error?: string;
-        }) => {
-          if (cancelled) return;
-          if (!json.configured) {
-            setBalanceSettlement(null);
-            setSettlementSymbol(null);
-            setSettlementBalanceError(false);
-            return;
-          }
-          if (json.error || json.balance === undefined) {
-            setSettlementBalanceError(true);
-            setSettlementSymbol(json.symbol ?? "Token");
-            return;
-          }
-          setBalanceSettlement(json.balance);
-          setSettlementSymbol(json.symbol ?? "Token");
+    setSettlementSymbol("AUSD");
+    setBalanceSettlement(null);
+    void fetchSettlementBalance(auth.address)
+      .then((result) => {
+        if (cancelled) return;
+        if (!result) {
+          setBalanceSettlement(null);
+          setSettlementSymbol(null);
           setSettlementBalanceError(false);
-        },
-      )
+          return;
+        }
+        setBalanceSettlement(result.balance);
+        setSettlementSymbol(result.symbol);
+        setSettlementBalanceError(false);
+      })
       .catch(() => {
         if (!cancelled) setSettlementBalanceError(true);
       });
@@ -158,9 +149,7 @@ export function WalletAuth({
       setAusdStatus(`${MONAD_EXPLORER_TX}${hash}`);
       setBalanceRefreshKey((k) => k + 1);
     } catch (err) {
-      setAusdStatus(
-        err instanceof Error ? err.message : "Could not request test AUSD.",
-      );
+      setAusdStatus(friendlyAusdFaucetError(err));
     } finally {
       setAusdBusy(false);
     }
