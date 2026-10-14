@@ -3,8 +3,13 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { NomaLogo } from "@/components/brand/NomaLogo";
-import { BrandHeader } from "@/components/layout/BrandHeader";
+import { BrandTitleBlock } from "@/components/layout/BrandTitleBlock";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import {
+  LandingFaqSection,
+  LandingWalkthroughSection,
+} from "@/components/landing/LandingHelpSections";
+import { LandingPageNav } from "@/components/landing/LandingPageNav";
 import { WalletAuth } from "@/components/wallet/WalletAuth";
 import { useWallet } from "@/components/wallet/WalletContext";
 
@@ -35,40 +40,59 @@ export function LandingPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-bg text-text">
       <header className="shrink-0 border-b border-border bg-surface">
-        <BrandHeader
-          trailing={
-            <>
-              {auth.status === "signed_in" ? (
-                <Link
-                  href="/app"
-                  className="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium text-text hover:opacity-90"
-                >
-                  Open app
-                </Link>
-              ) : null}
-              <NomaLogo size="lg" tone="dark" />
-            </>
-          }
-        />
+        <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <BrandTitleBlock size="lg" />
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between lg:justify-end lg:gap-4">
+              <LandingPageNav />
+              <div className="flex items-center gap-3">
+                {auth.status === "signed_in" ? (
+                  <Link
+                    href="/app"
+                    className="rounded-md border border-border bg-bg px-3 py-1.5 text-sm font-medium text-text hover:opacity-90"
+                  >
+                    Open app
+                  </Link>
+                ) : null}
+                <NomaLogo size="lg" tone="dark" />
+              </div>
+            </div>
+          </div>
+        </div>
       </header>
 
       <main className="flex flex-1 flex-col">
-        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-4 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:py-24">
+        <div className="mx-auto flex w-full max-w-7xl flex-1 flex-col px-4 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:py-24">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-16 xl:gap-20">
             <section className="border-l-2 border-text pl-6 sm:pl-8 lg:max-w-xl lg:pl-10">
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-text-muted">
-                Cross-border payments
+                Cross border payments
               </p>
               <h1 className="mt-4 font-display text-[2rem] font-semibold leading-[1.15] tracking-tight sm:text-[2.75rem] lg:text-[2.625rem] xl:text-[3rem]">
                 Send to Nigeria in plain language.
               </h1>
               <p className="mt-5 max-w-lg text-base leading-relaxed text-text-muted sm:text-lg">
                 Tell Noma who to pay and when. You review the plan before anything
-                runs. Sign in with a passkey, no password to memorize.
+                runs. Sign in with a passkey. No password to memorize and no
+                MetaMask required.
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-text-muted">
+                New here?{" "}
+                <a href="#walkthrough" className="font-medium text-text underline underline-offset-2">
+                  Read how to use Noma
+                </a>{" "}
+                or{" "}
+                <a href="#faq" className="font-medium text-text underline underline-offset-2">
+                  see the FAQ
+                </a>
+                .
               </p>
             </section>
 
-            <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-8 lg:p-10">
+            <section
+              id="get-started"
+              className="scroll-mt-24 rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-8 lg:p-10"
+            >
               <h2 className="font-display text-xl font-semibold sm:text-2xl">
                 Get started
               </h2>
@@ -122,6 +146,9 @@ export function LandingPage() {
               </li>
             ))}
           </ul>
+
+          <LandingWalkthroughSection />
+          <LandingFaqSection />
         </div>
       </main>
 
