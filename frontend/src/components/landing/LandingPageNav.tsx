@@ -1,7 +1,7 @@
 "use client";
 
 const linkClass =
-  "rounded-md px-3 py-1.5 text-sm font-medium text-text-muted transition-colors hover:bg-bg hover:text-text";
+  "rounded-md px-3 py-1.5 text-sm font-semibold text-text underline-offset-4 transition-colors hover:underline sm:text-base";
 
 export function LandingPageNav() {
   return (

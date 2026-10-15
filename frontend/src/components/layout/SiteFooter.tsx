@@ -25,7 +25,7 @@ export function SiteFooter({ compact = false, className = "" }: SiteFooterProps)
           Privacy policy
         </Link>
       </nav>
-      <p className="mx-auto mt-3 max-w-xl text-[11px] leading-relaxed text-text-muted sm:text-xs">
+      <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-text-muted">
         Orchestration only, not a money transmitter. Fiat payout to Nigeria is
         intended through licensed partners. Monad testnet demo.
       </p>

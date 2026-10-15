@@ -116,7 +116,7 @@ export function PaymentPlanCard({
         </div>
       </dl>
       {ngnEstimate && !isConfirmed ? (
-        <p className="mt-2 text-[11px] leading-relaxed text-text-muted">
+        <p className="mt-2 text-sm leading-relaxed text-text-muted">
           {ngnEstimate.disclaimer}
         </p>
       ) : null}

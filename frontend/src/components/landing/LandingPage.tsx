@@ -112,7 +112,7 @@ export function LandingPage() {
                 ) : (
                   <WalletAuth variant="hero" onSignedIn={goToApp} />
                 )}
-                <p className="mt-4 text-xs leading-relaxed text-text-muted">
+                <p className="mt-4 text-sm leading-relaxed text-text-muted">
                   By using Noma you agree to our{" "}
                   <Link href="/legal/terms" className="underline hover:text-text">
                     Terms of use

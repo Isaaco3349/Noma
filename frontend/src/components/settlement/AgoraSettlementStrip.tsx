@@ -53,7 +53,7 @@ export function AgoraSettlementStrip() {
       : "Demo token (swap to AUSD for production)";
 
   return (
-    <p className="mt-2 text-center text-[11px] leading-snug text-text-muted sm:text-xs lg:mt-1 lg:text-left">
+    <p className="mt-2 text-center text-sm leading-snug text-text-muted lg:mt-1 lg:text-left">
       Settlement:{" "}
       <span className="font-medium text-text">{issuerLabel}</span>
       {status.agora.metricsPublic && monadSupply ? (

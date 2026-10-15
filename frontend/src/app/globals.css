@@ -2,23 +2,23 @@
 
 /*
   Design tokens — single source of truth.
-  Warm stone: page = mid tan; panels/header = deeper tan (not washed-out cream).
-  Muted on bg: #4A453C on #BDB5A4 ≈ 5.2:1 (WCAG AA normal text).
+  Page: darker warm stone. Panels: light surface for reading (high contrast).
+  Body text #1a1f26 on #f4f0e8 ≈ 12:1. Muted #3f3a33 on surface ≈ 7:1 (WCAG AA+).
 */
 :root {
-  --bg: #bdb5a4;
-  --surface: #9a9285;
-  --accent: #8a8172;
-  --text: #262c34;
-  --text-muted: #3d3830;
-  --border: #857c6e;
+  --bg: #8a8276;
+  --surface: #f4f0e8;
+  --accent: #6b6358;
+  --text: #1a1f26;
+  --text-muted: #3f3a33;
+  --border: #5c564c;
 
   --header-bg: #262c34;
-  --header-fg: #f3efe6;
-  --header-muted: #b0a998;
+  --header-fg: #f4f0e8;
+  --header-muted: #d8d2c8;
 
-  --semantic-success: #2d6a4f;
-  --semantic-error: #9b2c2c;
+  --semantic-success: #1b5e40;
+  --semantic-error: #8a2424;
 
   --font-sans: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-display: Georgia, Cambria, "Times New Roman", serif;
@@ -44,4 +44,25 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.625;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --bg: #6f6860;
+    --surface: #faf8f4;
+    --text: #0d1117;
+    --text-muted: #2a2620;
+    --border: #3d3830;
+  }
 }
